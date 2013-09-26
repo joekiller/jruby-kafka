@@ -1,4 +1,4 @@
-require "jruby-kafka/client"
+require "jruby-kafka/consumer"
 
 module Kafka
 
