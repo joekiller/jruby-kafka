@@ -1,6 +1,3 @@
-jruby-kafka
-===========
-=======
 # Jruby::Kafka
 
 TODO: Write a gem description
