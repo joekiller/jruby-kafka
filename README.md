@@ -1,6 +1,7 @@
 # Jruby::Kafka
 
-TODO: Write a gem description
+This gem is primarily used to wrap most of the [Kafka 0.8beta1 high level consumer] API into jruby.
+The [Kafka Consumer Group Example] is pretty much ported to this library.
 
 ## Installation
 
@@ -18,7 +19,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+If you want to run the tests, make sure you already have downloaded Kafka 0.8beta1 and have KAFKA_PATH set in the
+environment.
 
 ## Contributing
 
@@ -27,3 +29,6 @@ TODO: Write usage instructions here
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+[Kafka 0.8beta1 high level consumer](http://kafka.apache.org/documentation.html#highlevelconsumerapi)
+[Kafka Consumer Group Example](https://cwiki.apache.org/confluence/display/KAFKA/Consumer+Group+Example)

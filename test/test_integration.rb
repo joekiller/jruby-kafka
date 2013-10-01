@@ -18,8 +18,28 @@ class TestKafka < Test::Unit::TestCase
   end
 
   def test_run
-    group = Kafka::Group.new('localhost:2181','test','test')
+    options = {
+        :zkConnectOpt => 'localhost:2181',
+        :groupIdOpt => 'test',
+        :topicIdOpt => 'test'
+    }
+    group = Kafka::Group.new(options)
     group.run(1)
+    Java::JavaLang::Thread.sleep 10000
+    group.shutdown()
+  end
+
+  def test_from_beginning
+    options = {
+        :zkConnectOpt => 'localhost:2181',
+        :groupIdOpt => 'beginning',
+        :topicIdOpt => 'test',
+        :resetBeginningOpt => 'from-beginning'
+    }
+    group = Kafka::Group.new(options)
+    group.run(3)
+    Java::JavaLang::Thread.sleep 10000
+    group.shutdown()
   end
 
 end
