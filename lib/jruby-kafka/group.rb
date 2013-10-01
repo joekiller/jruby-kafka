@@ -6,14 +6,41 @@ require "jruby-kafka/namespace"
 require "jruby-kafka/consumer"
 
 java_import 'java.util.concurrent.ExecutorService'
-java_import 'java.util.consurrent.Executors'
+java_import 'java.util.concurrent.Executors'
 
 class Kafka::Group
   @consumer
+  @executor
   @topic
   def initialize(a_zookeeper, a_groupId, a_topic)
     @consumer = Java::kafka::consumer::Consumer.createJavaConsumerConnector(createConsumerConfig(a_zookeeper,a_groupId))
     @topic = a_topic
+  end
+
+  public
+  def shutdown()
+    if @consumer
+      @consumer.shutdown()
+    end
+    if @executor
+      @executor.shutdown()
+    end
+  end
+
+  public
+  def run(a_numThreads)
+    topicCountMap = Hash.new()
+    topicCountMap[@topic] = a_numThreads
+    consumerMap = @consumer.createMessageStreams(topicCountMap)
+    streams = Array.new(consumerMap[@topic])
+
+    @executor = Executors.newFixedThreadPool(a_numThreads)
+
+    threadNumber = 0
+    for stream in streams
+      @executor.submit(Consumer.new(stream, threadNumber))
+      threadNumber += 1
+    end
   end
 
   private
