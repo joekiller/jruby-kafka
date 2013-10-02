@@ -23,7 +23,6 @@ class Kafka::Group
   #   zookeeper connection in the form host:port. Multiple URLS can be given to allow fail-over.
   # :group_id_opt => "group" - REQUIRED: The group id to consume on.
   # :topic_id_opt => "topic" - REQUIRED: The topic id to consume on.
-  # :message_queue => SizedQueue - REQUIRED: The message queue which consumer threads will populate.
   # :reset_beginning_opt => "from-beginning" - (optional) If the consumer does not already have an established offset
   #   to consume from, start with the earliest message present in the log rather than the latest message.
   def initialize(options={})
@@ -32,7 +31,6 @@ class Kafka::Group
     @zk_connect = options[:zk_connect_opt]
     @group_id = options[:group_id_opt]
     @topic = options[:topic_id_opt]
-    @message_queue = options[:message_queue]
 
 
     if options[:reset_beginning_opt]
@@ -54,10 +52,9 @@ class Kafka::Group
 
   private
   def validate_required_arguments(options={})
-    [:zk_connect_opt, :group_id_opt, :topic_id_opt, :message_queue].each do |opt|
+    [:zk_connect_opt, :group_id_opt, :topic_id_opt].each do |opt|
       raise(ArgumentError, "#{opt} is required.") unless options[opt]
     end
-    raise(ArgumentError, ":message_queue must be type SizedQueue.") unless options[:message_queue].is_a?(SizedQueue)
   end
 
   public
@@ -71,7 +68,7 @@ class Kafka::Group
   end
 
   public
-  def run(a_numThreads)
+  def run(a_numThreads, a_queue)
     topicCountMap = java.util.HashMap.new()
     thread_value = a_numThreads.to_java Java::int
     topicCountMap.put(@topic, thread_value)
@@ -82,7 +79,7 @@ class Kafka::Group
 
     threadNumber = 0
     for stream in streams
-      @executor.submit(Kafka::Consumer.new(stream, threadNumber, @message_queue))
+      @executor.submit(Kafka::Consumer.new(stream, threadNumber, a_queue))
       threadNumber += 1
     end
   end

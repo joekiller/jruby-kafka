@@ -22,11 +22,10 @@ class TestKafka < Test::Unit::TestCase
     options = {
         :zk_connect_opt => 'localhost:2181',
         :group_id_opt => 'test',
-        :topic_id_opt => 'test',
-        :message_queue => queue
+        :topic_id_opt => 'test'
     }
     group = Kafka::Group.new(options)
-    group.run(1)
+    group.run(1,queue)
     Java::JavaLang::Thread.sleep 10000
     group.shutdown()
     until queue.empty?
@@ -40,11 +39,10 @@ class TestKafka < Test::Unit::TestCase
         :zk_connect_opt => 'localhost:2181',
         :group_id_opt => 'beginning',
         :topic_id_opt => 'test',
-        :reset_beginning_opt => 'from-beginning',
-        :message_queue => queue
+        :reset_beginning_opt => 'from-beginning'
     }
     group = Kafka::Group.new(options)
-    group.run(2)
+    group.run(2,queue)
     Java::JavaLang::Thread.sleep 10000
     group.shutdown()
     until queue.empty?
