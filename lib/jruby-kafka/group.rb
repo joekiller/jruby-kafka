@@ -19,21 +19,24 @@ class Kafka::Group
   # Create a Kafka client group
   #
   # options:
-  # :zkConnectOpt => "localhost:2181" - REQUIRED: The connection string for the
+  # :zk_connect_opt => "localhost:2181" - REQUIRED: The connection string for the
   #   zookeeper connection in the form host:port. Multiple URLS can be given to allow fail-over.
-  # :groupIdOpt => "group" - The group id to consume on.
-  # :topicIdOpt => "topic" - The topic id to consume on.
-  # :resetBeginningOpt => "from-beginning" - (optional) If the consumer does not already have an established offset
+  # :group_id_opt => "group" - REQUIRED: The group id to consume on.
+  # :topic_id_opt => "topic" - REQUIRED: The topic id to consume on.
+  # :message_queue => SizedQueue - REQUIRED: The message queue which consumer threads will populate.
+  # :reset_beginning_opt => "from-beginning" - (optional) If the consumer does not already have an established offset
   #   to consume from, start with the earliest message present in the log rather than the latest message.
   def initialize(options={})
     validate_required_arguments(options)
 
-    @zk_connect = options[:zkConnectOpt]
-    @group_id = options[:groupIdOpt]
-    @topic = options[:topicIdOpt]
+    @zk_connect = options[:zk_connect_opt]
+    @group_id = options[:group_id_opt]
+    @topic = options[:topic_id_opt]
+    @message_queue = options[:message_queue]
 
-    if options[:resetBeginningOpt]
-      if options[:resetBeginningOpt] == 'from-beginning'
+
+    if options[:reset_beginning_opt]
+      if options[:reset_beginning_opt] == 'from-beginning'
         @auto_offset_reset = 'smallest'
       else
         @auto_offset_reset = 'largest'
@@ -51,9 +54,10 @@ class Kafka::Group
 
   private
   def validate_required_arguments(options={})
-    [:zkConnectOpt, :groupIdOpt, :topicIdOpt].each do |opt|
+    [:zk_connect_opt, :group_id_opt, :topic_id_opt, :message_queue].each do |opt|
       raise(ArgumentError, "#{opt} is required.") unless options[opt]
     end
+    raise(ArgumentError, ":message_queue must be type SizedQueue.") unless options[:message_queue].is_a?(SizedQueue)
   end
 
   public
@@ -78,7 +82,7 @@ class Kafka::Group
 
     threadNumber = 0
     for stream in streams
-      @executor.submit(Kafka::Consumer.new(stream, threadNumber))
+      @executor.submit(Kafka::Consumer.new(stream, threadNumber, @message_queue))
       threadNumber += 1
     end
   end

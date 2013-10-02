@@ -10,17 +10,18 @@ class Kafka::Consumer
 
   @m_stream
   @m_threadNumber
+  @m_queue
 
-    def initialize(a_stream, a_threadNumber)
+    def initialize(a_stream, a_threadNumber, a_queue)
       @m_threadNumber = a_threadNumber
       @m_stream = a_stream
+      @m_queue = a_queue
     end
 
-    def run()
+    def run
       it = @m_stream.iterator()
       while it.hasNext()
-        puts("Thread #{@m_threadNumber}: #{it.next().message()}")
+        @m_queue << it.next().message()
       end
-      puts("Shutting down Thread: #{@m_threadNumber}")
-      end
+    end
 end
