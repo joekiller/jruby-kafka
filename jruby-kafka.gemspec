@@ -12,11 +12,9 @@ Gem::Specification.new do |spec|
   spec.description   = "this is primarily to be used as an interface for logstash"
   spec.summary       = "jruby Kafka wrapper"
   spec.homepage      = "https://github.com/joekiller/jruby-kafka"
-  spec.license       = "MIT"
+  spec.license       = "Apache 2.0"
 
   spec.files         = files
   spec.require_paths << "lib"
 
-  spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
 end
