@@ -46,9 +46,6 @@ set JRUBY_KAFKA_HOME to the root of this repo.
 
     make clean && \
     bin/logstash deps && \
-    $(cd $JRUBY_KAFKA_HOME && rake package) && \
-    gem install $JRUBY_KAFKA_HOME/jruby-kafka-0.0.1.gem -i vendor/bundle/jruby/1.9 && \
-    bin/logstash deps && \
     make vendor-elasticsearch && \
     cp $KAFKA_HOME/core/target/scala-2.8.0/*.jar vendor/jar &&  \
     make flatjar && \
