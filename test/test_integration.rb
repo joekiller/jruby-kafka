@@ -20,9 +20,10 @@ class TestKafka < Test::Unit::TestCase
   def test_run
     queue = SizedQueue.new(20)
     options = {
-        :zk_connect_opt => 'localhost:2181',
-        :group_id_opt => 'test',
-        :topic_id_opt => 'test'
+        :zk_connect => 'localhost:2181',
+        :group_id => 'test',
+        :topic_id => 'test',
+        :zk_connect_timeout => '10000'
     }
     group = Kafka::Group.new(options)
     group.run(1,queue)
@@ -36,10 +37,10 @@ class TestKafka < Test::Unit::TestCase
   def test_from_beginning
     queue = SizedQueue.new(20)
     options = {
-        :zk_connect_opt => 'localhost:2181',
-        :group_id_opt => 'beginning',
-        :topic_id_opt => 'test',
-        :reset_beginning_opt => 'from-beginning'
+        :zk_connect => 'localhost:2181',
+        :group_id => 'beginning',
+        :topic_id => 'test',
+        :reset_beginning => 'from-beginning'
     }
     group = Kafka::Group.new(options)
     group.run(2,queue)

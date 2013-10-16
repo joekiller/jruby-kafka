@@ -42,12 +42,10 @@ Using in logstash:
 
 from the logstash root:
 
-set JRUBY_KAFKA_HOME to the root of this repo.
-
     make clean && \
     bin/logstash deps && \
     make vendor-elasticsearch && \
-    cp $KAFKA_HOME/core/target/scala-2.8.0/*.jar vendor/jar &&  \
+    cp $KAFKA_PATH/core/target/scala-2.8.0/*.jar vendor/jar &&  \
     make flatjar && \
     cd build && \
     java -jar logstash-1.2.2.dev-flatjar.jar agent -f kafkatest.conf
