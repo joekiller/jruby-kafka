@@ -40,6 +40,7 @@ class Kafka::Group
     @zk_sync_time = '2000'
     @auto_offset_reset = 'largest'
     @auto_commit_interval = '1000'
+    @running = false
 
     if options[:zk_connect_timeout]
       @zk_connect_timeout = options[:zk_connect_timeout]
@@ -62,16 +63,6 @@ class Kafka::Group
         @auto_offset_reset = 'largest'
       end
     end
-
-    begin
-      if @auto_offset_reset == 'smallest'
-        Java::kafka::utils::ZkUtils.maybeDeletePath(@zk_connect, "/consumers/#{@group_id}")
-      end
-
-      @consumer = Java::kafka::consumer::Consumer.createJavaConsumerConnector(createConsumerConfig())
-    rescue ZkException => e
-      raise KafkaError.new(e), "Got ZkException: #{e}"
-    end
   end
 
   private
@@ -89,10 +80,20 @@ class Kafka::Group
     if @executor
       @executor.shutdown()
     end
+    @running = false
   end
 
   public
   def run(a_numThreads, a_queue)
+    begin
+      if @auto_offset_reset == 'smallest'
+        Java::kafka::utils::ZkUtils.maybeDeletePath(@zk_connect, "/consumers/#{@group_id}")
+      end
+
+      @consumer = Java::kafka::consumer::Consumer.createJavaConsumerConnector(createConsumerConfig())
+    rescue ZkException => e
+      raise KafkaError.new(e), "Got ZkException: #{e}"
+    end
     topicCountMap = java.util.HashMap.new()
     thread_value = a_numThreads.to_java Java::int
     topicCountMap.put(@topic, thread_value)
@@ -100,12 +101,19 @@ class Kafka::Group
     streams = Array.new(consumerMap[@topic])
 
     @executor = Executors.newFixedThreadPool(a_numThreads)
+    @executor_submit = @executor.java_method(:submit, [Java::JavaLang::Runnable.java_class])
 
     threadNumber = 0
     for stream in streams
-      @executor.submit(Kafka::Consumer.new(stream, threadNumber, a_queue))
+      @executor_submit.call(Kafka::Consumer.new(stream, threadNumber, a_queue))
       threadNumber += 1
     end
+    @running = true
+  end
+
+  public
+  def running?
+    @running
   end
 
   private
