@@ -3,6 +3,7 @@ require "jruby-kafka/namespace"
 
 java_import 'kafka.consumer.ConsumerIterator'
 java_import 'kafka.consumer.KafkaStream'
+java_import 'kafka.common.ConsumerRebalanceFailedException'
 
 class Kafka::Consumer
   include Java::JavaLang::Runnable
@@ -21,7 +22,13 @@ class Kafka::Consumer
     def run
       it = @m_stream.iterator()
       while it.hasNext()
-        @m_queue << it.next().message()
+        begin
+          begin
+            @m_queue << it.next().message()
+          rescue ConsumerRebalanceFailedException => e
+            raise KafkaError.new(e), "Got ConsumerRebalanceFailedException: #{e}"
+          end
+        end
       end
     end
 end
