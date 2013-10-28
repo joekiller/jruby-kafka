@@ -46,7 +46,7 @@ class Kafka::Group
     @socket_timeout_ms = "#{30 * 1000}"
     @socket_receive_buffer_bytes = "#{64 * 1024}"
     @fetch_message_max_bytes = "#{1024 * 1024}"
-    @auto_commit_enable = true
+    @auto_commit_enable = "#{true}"
     @queued_max_message_chunks = '10'
     @fetch_min_bytes = '1'
     @fetch_wait_max_ms = '100'
@@ -87,7 +87,7 @@ class Kafka::Group
     end
 
     if options[:auto_commit_enable]
-      @auto_commit_enable = options[:auto_commit_enable]
+      @auto_commit_enable = "#{options[:auto_commit_enable]}"
     end
 
     if options[:queued_max_message_chunks]
