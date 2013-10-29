@@ -14,23 +14,31 @@ class Kafka::Consumer
   @m_threadNumber
   @m_queue
 
-    def initialize(a_stream, a_threadNumber, a_queue)
+    def initialize(a_stream, a_threadNumber, a_queue, a_bool_restart_on_exception, a_sleep_ms)
       @m_threadNumber = a_threadNumber
       @m_stream = a_stream
       @m_queue = a_queue
+      @m_restart_on_exception = a_bool_restart_on_exception
+      @m_sleep_ms = 1.0 / 1000.0 * Float(a_sleep_ms)
     end
 
     def run
       it = @m_stream.iterator()
-      while it.hasNext()
-        begin
+      begin
+        while it.hasNext()
           begin
             @m_queue << it.next().message()
-          rescue ConsumerRebalanceFailedException => e
-            raise KafkaError.new(e), "Got ConsumerRebalanceFailedException: #{e}"
-          rescue ConsumerTimeoutException => e
-            raise KafkaError.new(e), "Got ConsumerTimeoutException: #{e}"
           end
+        end
+      rescue Exception => e
+        puts("#{self.class.name} caught exception: #{e.class.name}")
+        puts(e.message) if e.message != ''
+        puts(e.backtrace)
+        if @m_restart_on_exception
+          sleep(@m_sleep_ms)
+          retry
+        else
+          raise e
         end
       end
     end

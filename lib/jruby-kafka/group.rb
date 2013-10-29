@@ -28,7 +28,8 @@ class Kafka::Group
   # :topic_id => "topic" - REQUIRED: The topic id to consume on.
   # :reset_beginning => "from-beginning" - (optional) If the consumer does not already have an established offset
   #   to consume from, start with the earliest message present in the log rather than the latest message.
-  #
+  # :consumer_restart_on_error => "true" - (optional) Controls if consumer threads are to restart on caught exceptions.
+  #   exceptions are logged.
   def initialize(options={})
     validate_required_arguments(options)
 
@@ -52,6 +53,8 @@ class Kafka::Group
     @fetch_wait_max_ms = '100'
     @refresh_leader_backoff_ms = '200'
     @consumer_timeout_ms = '-1'
+    @consumer_restart_on_error = "#{true}"
+    @consumer_restart_sleep_ms = '2000'
 
     if options[:zk_connect_timeout]
       @zk_connect_timeout = options[:zk_connect_timeout]
@@ -110,6 +113,15 @@ class Kafka::Group
       @consumer_timeout_ms = options[:consumer_timeout_ms]
     end
 
+    if options[:consumer_restart_on_error]
+      @consumer_restart_on_error = options[:consumer_restart_on_error]
+    end
+
+    if options[:consumer_restart_sleep_ms]
+      @consumer_restart_sleep_ms = options[:consumer_restart_sleep_ms]
+    end
+
+
     if options[:reset_beginning]
       if options[:reset_beginning] == 'from-beginning'
         @auto_offset_reset = 'smallest'
@@ -159,7 +171,7 @@ class Kafka::Group
 
     threadNumber = 0
     for stream in streams
-      @executor_submit.call(Kafka::Consumer.new(stream, threadNumber, a_queue))
+      @executor_submit.call(Kafka::Consumer.new(stream, threadNumber, a_queue, @consumer_restart_on_error, @consumer_restart_sleep_ms))
       threadNumber += 1
     end
     @running = true

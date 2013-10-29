@@ -23,12 +23,15 @@ class TestKafka < Test::Unit::TestCase
         :zk_connect => 'localhost:2181',
         :group_id => 'test',
         :topic_id => 'test',
-        :zk_connect_timeout => '10000'
+        :zk_connect_timeout => '1000',
+        :consumer_timeout_ms => '10',
+        :consumer_restart_sleep_ms => '5000',
+        :consumer_restart_on_error => true
     }
     group = Kafka::Group.new(options)
     puts(group.running?)
     group.run(1,queue)
-    Java::JavaLang::Thread.sleep 10000
+    Java::JavaLang::Thread.sleep 30000
     puts(group.running?)
     group.shutdown()
     until queue.empty?
