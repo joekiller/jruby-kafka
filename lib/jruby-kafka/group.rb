@@ -53,40 +53,40 @@ class Kafka::Group
     @fetch_wait_max_ms = '100'
     @refresh_leader_backoff_ms = '200'
     @consumer_timeout_ms = '-1'
-    @consumer_restart_on_error = "#{true}"
+    @consumer_restart_on_error = "#{false}"
     @consumer_restart_sleep_ms = '2000'
 
     if options[:zk_connect_timeout]
-      @zk_connect_timeout = options[:zk_connect_timeout]
+      @zk_connect_timeout = "#{options[:zk_connect_timeout]}"
     end
     if options[:zk_session_timeout]
-      @zk_session_timeout = options[:zk_session_timeout]
+      @zk_session_timeout = "#{options[:zk_session_timeout]}"
     end
     if options[:zk_sync_time]
-      @zk_sync_time = options[:zk_sync_time]
+      @zk_sync_time = "#{options[:zk_sync_time]}"
     end
     if options[:auto_commit_interval]
-      @auto_commit_interval = options[:auto_commit_interval]
+      @auto_commit_interval = "#{options[:auto_commit_interval]}"
     end
 
     if options[:rebalance_max_retries]
-      @rebalance_max_retries = options[:rebalance_max_retries]
+      @rebalance_max_retries = "#{options[:rebalance_max_retries]}"
     end
 
     if options[:rebalance_backoff_ms]
-      @rebalance_backoff_ms = options[:rebalance_backoff_ms]
+      @rebalance_backoff_ms = "#{options[:rebalance_backoff_ms]}"
     end
 
     if options[:socket_timeout_ms]
-      @socket_timeout_ms = options[:socket_timeout_ms]
+      @socket_timeout_ms = "#{options[:socket_timeout_ms]}"
     end
 
     if options[:socket_receive_buffer_bytes]
-      @socket_receive_buffer_bytes = options[:socket_receive_buffer_bytes]
+      @socket_receive_buffer_bytes = "#{options[:socket_receive_buffer_bytes]}"
     end
 
     if options[:fetch_message_max_bytes]
-      @fetch_message_max_bytes = options[:fetch_message_max_bytes]
+      @fetch_message_max_bytes = "#{options[:fetch_message_max_bytes]}"
     end
 
     if options[:auto_commit_enable]
@@ -94,31 +94,31 @@ class Kafka::Group
     end
 
     if options[:queued_max_message_chunks]
-      @queued_max_message_chunks = options[:queued_max_message_chunks]
+      @queued_max_message_chunks = "#{options[:queued_max_message_chunks]}"
     end
 
     if options[:fetch_min_bytes]
-      @fetch_min_bytes = options[:fetch_min_bytes]
+      @fetch_min_bytes = "#{options[:fetch_min_bytes]}"
     end
 
     if options[:fetch_wait_max_ms]
-      @fetch_wait_max_ms = options[:fetch_wait_max_ms]
+      @fetch_wait_max_ms = "#{options[:fetch_wait_max_ms]}"
     end
 
     if options[:refresh_leader_backoff_ms]
-      @refresh_leader_backoff_ms = options[:refresh_leader_backoff_ms]
+      @refresh_leader_backoff_ms = "#{options[:refresh_leader_backoff_ms]}"
     end
 
     if options[:consumer_timeout_ms]
-      @consumer_timeout_ms = options[:consumer_timeout_ms]
+      @consumer_timeout_ms = "#{options[:consumer_timeout_ms]}"
     end
 
     if options[:consumer_restart_on_error]
-      @consumer_restart_on_error = options[:consumer_restart_on_error]
+      @consumer_restart_on_error = "#{options[:consumer_restart_on_error]}"
     end
 
     if options[:consumer_restart_sleep_ms]
-      @consumer_restart_sleep_ms = options[:consumer_restart_sleep_ms]
+      @consumer_restart_sleep_ms = "#{options[:consumer_restart_sleep_ms]}"
     end
 
 
