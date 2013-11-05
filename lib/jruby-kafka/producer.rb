@@ -8,12 +8,8 @@ require "jruby-kafka/error"
 java_import 'org.I0Itec.zkclient.exception.ZkException'
 
 class Kafka::Producer
-  @consumer
-  @executor
   @topic
-  @auto_offset_reset
   @zk_connect
-  @group_id
 
   # Create a Kafka Producer
   #
