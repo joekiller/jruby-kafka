@@ -48,7 +48,7 @@ from the logstash root:
     cp $KAFKA_PATH/core/target/scala-2.8.0/*.jar vendor/jar &&  \
     make flatjar && \
     cd build && \
-    java -jar logstash-1.2.2.dev-flatjar.jar agent -f kafkatest.conf
+    java -cp logstash-1.2.2-flatjar.jar logstash.runner agent -f kafkatest.conf
 
 ## Contributing
 

@@ -54,7 +54,7 @@ class Kafka::Group
     @refresh_leader_backoff_ms = '200'
     @consumer_timeout_ms = '-1'
     @consumer_restart_on_error = "#{false}"
-    @consumer_restart_sleep_ms = '2000'
+    @consumer_restart_sleep_ms = '0'
 
     if options[:zk_connect_timeout]
       @zk_connect_timeout = "#{options[:zk_connect_timeout]}"

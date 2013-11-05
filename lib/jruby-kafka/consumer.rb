@@ -33,7 +33,6 @@ class Kafka::Consumer
       rescue Exception => e
         puts("#{self.class.name} caught exception: #{e.class.name}")
         puts(e.message) if e.message != ''
-        puts(e.backtrace)
         if @m_restart_on_exception
           sleep(@m_sleep_ms)
           retry
