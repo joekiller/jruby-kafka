@@ -42,7 +42,7 @@ instructions and have KAFKA_PATH set in the environment.
 
 make a producer
 
-jar_dir = "path/to/dir/with/kafka/jars"
+    jar_dir = "path/to/dir/with/kafka/jars"
 
     include Java
     Dir.glob(File.join(jar_dir, "*.jar")) { |jar|
