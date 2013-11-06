@@ -38,7 +38,46 @@ instructions and have KAFKA_PATH set in the environment.
 
 [kafka quickstart]: http://kafka.apache.org/documentation.html#quickstart
 
-Using in logstash:
+#### Using in irb
+
+make a producer
+
+jar_dir = "path/to/dir/with/kafka/jars"
+
+    include Java
+    Dir.glob(File.join(jar_dir, "*.jar")) { |jar|
+      $CLASSPATH << jar
+    }
+    require 'jruby-kafka'
+
+    producer_options = {:zk_connect => "localhost:2181", :topic_id => "test", :broker_list => "localhost:9092"}
+    producer = Kafka::Producer.new(producer_options)
+    producer.connect()
+    producer.sendMsg(nil, "heres a test")
+
+
+then a consumer
+
+    include Java
+    Dir.glob(File.join(jar_dir, "*.jar")) { |jar|
+      $CLASSPATH << jar
+    }
+    require 'jruby-kafka'
+    queue = SizedQueue.new(20)
+    group = Kafka::Group.new(options)
+    group.run(1,queue)
+    Java::JavaLang::Thread.sleep 3000
+
+    #just gets first 20 things & prints out
+    until queue.empty?
+      puts(queue.pop)
+    end
+
+    group.shutdown()
+
+
+
+#### Using in logstash:
 
 from the logstash root:
 
