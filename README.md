@@ -21,7 +21,9 @@ The [Kafka Consumer Group Example] is pretty much ported to this library.
 
 ## Installation
 
-This isn't distributed yet so you have to build the gem first.  From the root of the project run:
+This package is now distruted via rubygems.org but you can build it using the following instructions.
+
+From the root of the project run:
 
     $ rake package
 
@@ -81,15 +83,7 @@ then a consumer
 
 #### Using in logstash:
 
-from the logstash root:
-
-    make clean && \
-    bin/logstash deps && \
-    make vendor-elasticsearch && \
-    cp $KAFKA_PATH/core/target/scala-2.8.0/*.jar vendor/jar &&  \
-    make flatjar && \
-    cd build && \
-    java -cp logstash-1.2.2-flatjar.jar logstash.runner agent -f kafkatest.conf
+Check out this repo: https://github.com/joekiller/logstash-kafka
 
 ## Contributing
 
