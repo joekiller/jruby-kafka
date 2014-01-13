@@ -1,0 +1,5 @@
+0.0.10 (January 13, 2014)
+    # general
+    - first time using changelog
+    - added preliminary producer from pull request, thank you squito (https://github.com/joekiller/jruby-kafka/pull/1)
+    - updated to README.md to reference Kafka 0.8.0 release.
