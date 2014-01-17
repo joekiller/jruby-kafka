@@ -17,6 +17,15 @@ class TestKafka < Test::Unit::TestCase
     require 'jruby-kafka'
   end
 
+  def test_producer
+    options = {
+        :broker_list => 'localhost:9092'
+    }
+    producer = Kafka::Producer.new(options)
+    producer.connect()
+    producer.sendMsg('test',nil, 'test message')
+  end
+
   def test_run
     queue = SizedQueue.new(20)
     options = {
