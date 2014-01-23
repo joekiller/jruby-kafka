@@ -22,6 +22,8 @@ class Kafka::Producer
     @serializer_class = 'kafka.serializer.StringEncoder'
     @partitioner_class = nil
     @request_required_acks = '0'
+    @compression_codec = "#{Java::kafka::message::NoCompressionCodec.name}"
+    @compressed_topics = ''
 
     if options[:partitioner_class]
       @partitioner_class = "#{options[:partitioner_class]}"
@@ -29,6 +31,22 @@ class Kafka::Producer
 
     if options[:request_required_acks]
       @request_required_acks = "#{options[:request_required_acks]}"
+    end
+
+    if options[:compression_codec]
+      required_codecs = ["#{Java::kafka::message::NoCompressionCodec.name}",
+                         "#{Java::kafka::message::GZIPCompressionCodec.name}",
+                         "#{Java::kafka::message::SnappyCompressionCodec.name}"]
+      if not required_codecs.include? options[:compression_codec]
+        raise(ArgumentError, "#{options[:compression_codec]} is not one of required codecs: #{required_codecs}")
+      end
+      @compression_codec = options[:compression_codec]
+    end
+
+    if options[:compressed_topics]
+      if @compression_codec != 'none'
+        @compressed_topics = options[:compressed_topics]
+      end
     end
   end
 
@@ -67,6 +85,8 @@ class Kafka::Producer
       properties.put("partitioner.class", @partitioner_class)
     end
     properties.put("serializer.class", @serializer_class)
+    properties.put("compression.codec", @compression_codec)
+    properties.put("compressed.topics", @compressed_topics)
     return Java::kafka::producer::ProducerConfig.new(properties)
   end
 end

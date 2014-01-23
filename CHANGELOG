@@ -1,3 +1,9 @@
+0.0.12 (January 23, 2014)
+    # producer
+    - added support for compression_codec and compressed_topics
+0.0.11 (January 17, 2014)
+    # general
+    - cleaned up producer to remove unnecessary code
 0.0.10 (January 13, 2014)
     # general
     - first time using changelog

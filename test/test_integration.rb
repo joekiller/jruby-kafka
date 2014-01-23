@@ -26,6 +26,29 @@ class TestKafka < Test::Unit::TestCase
     producer.sendMsg('test',nil, 'test message')
   end
 
+  def producer_compression_send(compression_codec)
+    options = {
+        :broker_list => 'localhost:9092',
+        :compression_codec => compression_codec
+    }
+    producer = Kafka::Producer.new(options)
+    producer.connect()
+    producer.sendMsg('test',nil, 'test message')
+  end
+
+  def test_compression_none
+    producer_compression_send('none')
+  end
+
+  def test_compression_gzip
+    producer_compression_send('gzip')
+  end
+
+  def test_compression_snappy
+    #snappy test may fail on mac, see https://code.google.com/p/snappy-java/issues/detail?id=39
+    producer_compression_send('snappy')
+  end
+
   def test_run
     queue = SizedQueue.new(20)
     options = {
