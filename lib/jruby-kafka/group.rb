@@ -55,6 +55,7 @@ class Kafka::Group
     @consumer_timeout_ms = '-1'
     @consumer_restart_on_error = "#{false}"
     @consumer_restart_sleep_ms = '0'
+    @consumer_id = nil
 
     if options[:zk_connect_timeout]
       @zk_connect_timeout = "#{options[:zk_connect_timeout]}"
@@ -128,6 +129,10 @@ class Kafka::Group
       else
         @auto_offset_reset = 'largest'
       end
+    end
+
+    if options[:consumer_id]
+      @consumer_id = options[:consumer_id]
     end
   end
 
@@ -203,6 +208,9 @@ class Kafka::Group
     properties.put("fetch.wait.max.ms", @fetch_wait_max_ms)
     properties.put("refresh.leader.backoff.ms", @refresh_leader_backoff_ms)
     properties.put("consumer.timeout.ms", @consumer_timeout_ms)
+    unless @consumer_id.nil?
+      properties.put('consumer.id', @consumer_id)
+    end
     return Java::kafka::consumer::ConsumerConfig.new(properties)
   end
 end
