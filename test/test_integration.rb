@@ -19,21 +19,23 @@ class TestKafka < Test::Unit::TestCase
 
   def test_producer
     options = {
-        :broker_list => 'localhost:9092'
+        :broker_list => 'localhost:9092',
+        :serializer_class => 'kafka.serializer.StringEncoder'
     }
     producer = Kafka::Producer.new(options)
     producer.connect()
     producer.sendMsg('test',nil, 'test message')
   end
 
-  def producer_compression_send(compression_codec)
+  def producer_compression_send(compression_codec='none')
     options = {
         :broker_list => 'localhost:9092',
-        :compression_codec => compression_codec
+        :compression_codec => compression_codec,
+        :serializer_class => 'kafka.serializer.StringEncoder'
     }
     producer = Kafka::Producer.new(options)
     producer.connect()
-    producer.sendMsg('test',nil, 'test message')
+    producer.sendMsg('test',nil, "codec #{compression_codec} test message")
   end
 
   def test_compression_none
