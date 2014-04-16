@@ -1,3 +1,9 @@
+0.1.0 (April 16, 2014)
+    # producer
+    - implemented remaining producer config variables.
+    - changed serializer.class from `kafka.serializer.StringEncoder` to nil which will result in it being the `kafka.serializer.DefaultEncoder` which is a byte stream.
+    # consumer
+    - added consumer_id
 0.0.12 (January 23, 2014)
     # producer
     - added support for compression_codec and compressed_topics
