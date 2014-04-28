@@ -13,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "jruby Kafka wrapper"
   spec.homepage      = "https://github.com/joekiller/jruby-kafka"
   spec.license       = "Apache 2.0"
+  spec.platform      = "java"
 
   spec.files         = files
   spec.require_paths << "lib"
