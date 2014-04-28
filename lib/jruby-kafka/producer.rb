@@ -5,15 +5,23 @@ require "java"
 require "jruby-kafka/namespace"
 require "jruby-kafka/error"
 
-java_import 'kafka.common.FailedToSendMessageException'
-
 class Kafka::Producer
+  java_import 'kafka.producer.ProducerConfig'
+  java_import 'kafka.producer.KeyedMessage'
+  KafkaProducer = Java::kafka.javaapi.producer.Producer
+  java_import 'kafka.message.NoCompressionCodec'
+  java_import 'kafka.message.GZIPCompressionCodec'
+  java_import 'kafka.message.SnappyCompressionCodec'
+
+  attr_reader :producer, :send_method
+
   # Create a Kafka Producer
   #
   # options:
   # :broker_list => "localhost:9092" - REQUIRED: a seed list of kafka brokers
   def initialize(options={})
     validate_required_arguments(options)
+    @send_method = proc { throw StandardError.new "Producer is not connected" }
 
     @metadata_broker_list = options[:broker_list]
     @serializer_class = nil
@@ -47,9 +55,9 @@ class Kafka::Producer
     end
 
     if options[:compression_codec]
-      required_codecs = ["#{Java::kafka::message::NoCompressionCodec.name}",
-                         "#{Java::kafka::message::GZIPCompressionCodec.name}",
-                         "#{Java::kafka::message::SnappyCompressionCodec.name}"]
+      required_codecs = ["#{NoCompressionCodec.name}",
+                         "#{GZIPCompressionCodec.name}",
+                         "#{SnappyCompressionCodec.name}"]
       if not required_codecs.include? "#{options[:compression_codec]}"
         raise(ArgumentError, "#{options[:compression_codec]} is not one of required codecs: #{required_codecs}")
       end
@@ -119,29 +127,21 @@ class Kafka::Producer
     end
   end
 
+  public
+  def connect()
+    @producer = KafkaProducer.new(createProducerConfig)
+    @send_method = producer.java_method :send, [KeyedMessage]
+  end
+
+  # throws FailedToSendMessageException or if not connected, StandardError.
+  def sendMsg(topic, key, msg)
+    send_method.call(KeyedMessage.new(topic, key, msg))
+  end
+
   private
   def validate_required_arguments(options={})
     [:broker_list].each do |opt|
       raise(ArgumentError, "#{opt} is required.") unless options[opt]
-    end
-  end
-
-  public
-  def connect()
-    @producer = Java::kafka::producer::Producer.new(createProducerConfig)
-  end
-
-  public
-  def sendMsg(topic, key, msg)
-    m = Java::kafka::producer::KeyedMessage.new(topic=topic, key=key, message=msg)
-    #the send message for a producer is scala varargs, which doesn't seem to play nice w/ jruby
-    #  this is the best I could come up with
-    ms = Java::scala::collection::immutable::Vector.new(0,0,0)
-    ms = ms.append_front(m)
-    begin
-      @producer.send(ms)
-    rescue FailedToSendMessageException => e
-      raise KafkaError.new(e), "Got FailedToSendMessageException: #{e}"
     end
   end
 
@@ -200,6 +200,6 @@ class Kafka::Producer
     unless @client_id.nil?
       properties.put('client.id', @client_id)
     end
-    return Java::kafka::producer::ProducerConfig.new(properties)
+    return ProducerConfig.new(properties)
   end
 end
