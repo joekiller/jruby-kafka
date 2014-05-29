@@ -54,7 +54,7 @@ make a producer
     }
     require 'jruby-kafka'
 
-    producer_options = {:zk_connect => "localhost:2181", :topic_id => "test", :broker_list => "localhost:9092"}
+    producer_options = {:topic_id => "test", :broker_list => "localhost:9092"}
     producer = Kafka::Producer.new(producer_options)
     producer.connect()
     producer.sendMsg(nil, "heres a test")
