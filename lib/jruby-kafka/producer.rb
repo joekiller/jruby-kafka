@@ -72,7 +72,7 @@ class Kafka::Producer
 
   # throws FailedToSendMessageException or if not connected, StandardError.
   def sendMsg(topic, key, msg)
-    send_method.call(KeyedMessage.new(topic, key, msg))
+    if key.nil? send_method.call(KeyedMessage.new(topic, msg)) : send_method.call(KeyedMessage.new(topic, key, msg))
   end
 
   private
