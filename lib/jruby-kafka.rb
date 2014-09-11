@@ -5,8 +5,9 @@
 # - already have the Kafka jars loaded before requiring jruby-kafka
 # - set KAFKA_PATH in the environment to point to a Kafka binary installation
 #
-if not JBUNDLER_CLASSPATH and ENV['KAFKA_PATH']
+if not defined? JBUNDLER_CLASSPATH and ENV['KAFKA_PATH']
   require 'jruby-kafka/loader'
+  Kafka.load_jars()
 end
 
 require "jruby-kafka/consumer"
