@@ -26,19 +26,13 @@ class Kafka::Producer
   # List of all available options extracted from http://kafka.apache.org/documentation.html#producerconfigs Apr. 27, 2014
   # If new options are added, they should just work. Please add them to the list so that we can get handy warnings.
   KNOWN = %w[
-    acks                   max.request.size              receive.buffer.bytes
-    batch.num.messages     message.send.max.retries      reconnect.backoff.ms
-    batch.size             metadata.broker.list          request.required.acks
-    block.on.buffer.full   metadata.fetch.timeout.ms     request.timeout.ms
-    bootstrap.servers      metadata.max.age.ms           retries
-    buffer.memory          metric.reporters              retry.backoff.ms
-    client.id              metrics.num.samples           retry.backoff.ms
-    client.id              metrics.sample.window.ms      send.buffer.bytes
-    compressed.topics      partitioner.class             send.buffer.bytes
-    compression.codec      producer.type                 serializer.class
-    compression.type       queue.buffering.max.messages  timeout.ms
-    key.serializer.class   queue.buffering.max.ms        topic.metadata.refresh.interval.ms
-    linger.ms              queue.enqueue.timeout.ms
+    metadata.broker.list      request.required.acks         request.timeout.ms
+    producer.type             serializer.class              key.serializer.class
+    partitioner.class         compression.codec             compressed.topics
+    message.send.max.retries  retry.backoff.ms              topic.metadata.refresh.interval.ms
+    queue.buffering.max.ms    queue.buffering.max.messages  queue.enqueue.timeout.ms
+    batch.num.messages        send.buffer.bytes             client.id
+    broker.list
   ]
 
   attr_reader :producer, :send_method, :options
