@@ -59,7 +59,7 @@ class Kafka::Producer
     @send_method = proc { throw StandardError.new "Producer is not connected" }
   end
 
-  def connect()
+  def connect
     @producer = KafkaProducer.new(createProducerConfig)
     @send_method = producer.java_method :send, [KeyedMessage]
   end
@@ -67,6 +67,10 @@ class Kafka::Producer
   # throws FailedToSendMessageException or if not connected, StandardError.
   def sendMsg(topic, key, msg)
     send_method.call(KeyedMessage.new(topic, key, msg))
+  end
+
+  def close
+    @producer.close
   end
 
   private
@@ -83,7 +87,7 @@ class Kafka::Producer
     end
   end
 
-  def createProducerConfig()
+  def createProducerConfig
     properties = java.util.Properties.new()
     options.each { |opt, value| properties.put opt, value.to_s }
     return ProducerConfig.new(properties)
