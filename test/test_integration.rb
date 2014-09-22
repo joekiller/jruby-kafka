@@ -1,4 +1,4 @@
-require "test/unit"
+require 'test/unit'
 
 class TestKafka < Test::Unit::TestCase
   def setup
@@ -12,7 +12,17 @@ class TestKafka < Test::Unit::TestCase
         :serializer_class => 'kafka.serializer.StringEncoder'
     }
     producer = Kafka::Producer.new(options)
-    producer.connect()
+    producer.connect
+    producer.send_msg('test',nil, 'test message')
+  end
+
+  def test_send_msg_deprecated
+    options = {
+        :broker_list => 'localhost:9092',
+        :serializer_class => 'kafka.serializer.StringEncoder'
+    }
+    producer = Kafka::Producer.new(options)
+    producer.connect
     producer.sendMsg('test',nil, 'test message')
   end
 
@@ -23,8 +33,8 @@ class TestKafka < Test::Unit::TestCase
         :serializer_class => 'kafka.serializer.StringEncoder'
     }
     producer = Kafka::Producer.new(options)
-    producer.connect()
-    producer.sendMsg('test',nil, "codec #{compression_codec} test message")
+    producer.connect
+    producer.send_msg('test',nil, "codec #{compression_codec} test message")
   end
 
   def test_compression_none
@@ -56,7 +66,7 @@ class TestKafka < Test::Unit::TestCase
     group.run(1,queue)
     Java::JavaLang::Thread.sleep 30000
     puts(group.running?)
-    group.shutdown()
+    group.shutdown
     until queue.empty?
       puts(queue.pop)
     end
@@ -73,7 +83,7 @@ class TestKafka < Test::Unit::TestCase
     group = Kafka::Group.new(options)
     group.run(2,queue)
     Java::JavaLang::Thread.sleep 10000
-    group.shutdown()
+    group.shutdown
     until queue.empty?
       puts(queue.pop)
     end

@@ -1,22 +1,24 @@
 # basically we are porting this https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example
 
-require "java"
+require 'java'
 
-require "jruby-kafka/namespace"
-require "jruby-kafka/error"
+require 'jruby-kafka/namespace'
+require 'jruby-kafka/error'
 
+# noinspection JRubyStringImportInspection
 class Kafka::Producer
+  extend Gem::Deprecate
   java_import 'kafka.producer.ProducerConfig'
   java_import 'kafka.producer.KeyedMessage'
-  KafkaProducer = Java::kafka.javaapi.producer.Producer
+  KAFKA_PRODUCER = Java::kafka.javaapi.producer.Producer
   java_import 'kafka.message.NoCompressionCodec'
   java_import 'kafka.message.GZIPCompressionCodec'
   java_import 'kafka.message.SnappyCompressionCodec'
 
   VALIDATIONS = {
-    'request.required.acks' => %w[ 0 1 -1 ],
-    'required.codecs' => [NoCompressionCodec.name, GZIPCompressionCodec.name, SnappyCompressionCodec.name],
-    'producer.type' => %w[ sync async ]
+    :'request.required.acks' => %w[ 0 1 -1 ],
+    :'required.codecs' => [NoCompressionCodec.name, GZIPCompressionCodec.name, SnappyCompressionCodec.name],
+    :'producer.type' => %w[ sync async ]
   }
 
   REQUIRED = %w[
@@ -42,11 +44,11 @@ class Kafka::Producer
   # options:
   # metadata_broker_list: ["localhost:9092"] - REQUIRED: a seed list of kafka brokers
   def initialize(opts = {})
-    @options = opts.reduce({}) do |opts, (k, v)|
+    @options = opts.reduce({}) do |opts_array, (k, v)|
       unless v.nil?
-        opts[k.to_s.gsub(/_/, '.')] = v
+        opts_array[k.to_s.gsub(/_/, '.')] = v
       end
-      opts
+      opts_array
     end
     if options['broker.list']
       options['metadata.broker.list'] = options.delete 'broker.list'
@@ -58,18 +60,23 @@ class Kafka::Producer
       options['compressed.topics'] = options['compressed.topics'].join(',')
     end
     validate_arguments
-    @send_method = proc { throw StandardError.new "Producer is not connected" }
+    @send_method = proc { throw StandardError.new 'Producer is not connected' }
   end
 
   def connect
-    @producer = KafkaProducer.new(createProducerConfig)
+    @producer = KAFKA_PRODUCER.new(create_producer_config)
     @send_method = producer.java_method :send, [KeyedMessage]
   end
 
   # throws FailedToSendMessageException or if not connected, StandardError.
-  def sendMsg(topic, key, msg)
+  def send_msg(topic, key, msg)
     send_method.call(KeyedMessage.new(topic, key, msg))
   end
+
+  def sendMsg(topic, key, msg)
+    send_msg(topic, key, msg)
+  end
+  deprecate :sendMsg, :send_msg, 2015, 01
 
   def close
     @producer.close
@@ -89,9 +96,9 @@ class Kafka::Producer
     end
   end
 
-  def createProducerConfig
-    properties = java.util.Properties.new()
+  def create_producer_config
+    properties = java.util.Properties.new
     options.each { |opt, value| properties.put opt, value.to_s }
-    return ProducerConfig.new(properties)
+    ProducerConfig.new(properties)
   end
 end

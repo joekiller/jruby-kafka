@@ -1,33 +1,34 @@
-require "java"
-require "jruby-kafka/namespace"
+require 'java'
+require 'jruby-kafka/namespace'
 
-java_import 'kafka.consumer.ConsumerIterator'
-java_import 'kafka.consumer.KafkaStream'
-java_import 'kafka.common.ConsumerRebalanceFailedException'
-java_import 'kafka.consumer.ConsumerTimeoutException'
-
+# noinspection JRubyStringImportInspection
 class Kafka::Consumer
+  java_import 'kafka.consumer.ConsumerIterator'
+  java_import 'kafka.consumer.KafkaStream'
+  java_import 'kafka.common.ConsumerRebalanceFailedException'
+  java_import 'kafka.consumer.ConsumerTimeoutException'
+
   include Java::JavaLang::Runnable
   java_signature 'void run()'
 
   @m_stream
-  @m_threadNumber
+  @m_thread_number
   @m_queue
 
-    def initialize(a_stream, a_threadNumber, a_queue, a_bool_restart_on_exception, a_sleep_ms)
-      @m_threadNumber = a_threadNumber
+    def initialize(a_stream, a_thread_number, a_queue, restart_on_exception, a_sleep_ms)
+      @m_thread_number = a_thread_number
       @m_stream = a_stream
       @m_queue = a_queue
-      @m_restart_on_exception = a_bool_restart_on_exception
+      @m_restart_on_exception = restart_on_exception
       @m_sleep_ms = 1.0 / 1000.0 * Float(a_sleep_ms)
     end
 
     def run
-      it = @m_stream.iterator()
+      it = @m_stream.iterator
       begin
-        while it.hasNext()
+        while it.hasNext
           begin
-            @m_queue << it.next().message()
+            @m_queue << it.next.message
           end
         end
       rescue Exception => e

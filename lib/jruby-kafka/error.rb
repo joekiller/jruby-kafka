@@ -1,4 +1,4 @@
-require "jruby-kafka/namespace"
+require 'jruby-kafka/namespace'
 
 class KafkaError < StandardError
   attr_reader :object

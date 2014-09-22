@@ -7,12 +7,12 @@
 #
 if not defined? JBUNDLER_CLASSPATH and ENV['KAFKA_PATH']
   require 'jruby-kafka/loader'
-  Kafka.load_jars()
+  Kafka.load_jars
 end
 
-require "jruby-kafka/consumer"
-require "jruby-kafka/group"
-require "jruby-kafka/producer"
+require 'jruby-kafka/consumer'
+require 'jruby-kafka/group'
+require 'jruby-kafka/producer'
 
 module Kafka
 end

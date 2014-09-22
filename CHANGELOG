@@ -1,3 +1,9 @@
+0.2.1 (September 22, 2014)
+    # producer
+    - fixed argument parser including nil options
+    - updated compressed.topics to take an array and transform it into comma separated list.
+    - removed compressed.topics parsing log fallacy.
+    - tons of inspection/style fixes
 0.2.0 (September 20, 2014)
     # producer
     - exposed close method to producer for cleanup in async threads.

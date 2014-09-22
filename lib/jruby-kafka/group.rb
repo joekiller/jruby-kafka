@@ -1,16 +1,17 @@
 # basically we are porting this https://cwiki.apache.org/confluence/display/KAFKA/Consumer+Group+Example
 
-require "java"
+require 'java'
 
-require "jruby-kafka/namespace"
-require "jruby-kafka/consumer"
-require "jruby-kafka/error"
+require 'jruby-kafka/namespace'
+require 'jruby-kafka/consumer'
+require 'jruby-kafka/error'
 
-java_import 'java.util.concurrent.ExecutorService'
-java_import 'java.util.concurrent.Executors'
-java_import 'org.I0Itec.zkclient.exception.ZkException'
-
+# noinspection JRubyStringImportInspection
 class Kafka::Group
+  java_import 'java.util.concurrent.ExecutorService'
+  java_import 'java.util.concurrent.Executors'
+  java_import 'org.I0Itec.zkclient.exception.ZkException'
+
   @consumer
   @executor
   @topic
@@ -136,81 +137,80 @@ class Kafka::Group
     end
   end
 
+  public
+
+  def shutdown
+    if @consumer
+      @consumer.shutdown
+    end
+    if @executor
+      @executor.shutdown
+    end
+    @running = false
+  end
+
+  def run(a_num_threads, a_queue)
+    begin
+      if @auto_offset_reset == 'smallest'
+        Java::kafka::utils::ZkUtils.maybeDeletePath(@zk_connect, "/consumers/#{@group_id}")
+      end
+
+      @consumer = Java::kafka::consumer::Consumer.createJavaConsumerConnector(create_consumer_config)
+    rescue ZkException => e
+      raise KafkaError.new(e), "Got ZkException: #{e}"
+    end
+    topic_count_map = java.util.HashMap.new
+    thread_value = a_num_threads.to_java Java::int
+    topic_count_map.put(@topic, thread_value)
+    consumer_map = @consumer.createMessageStreams(topic_count_map)
+    streams = Array.new(consumer_map[@topic])
+
+    @executor = Executors.newFixedThreadPool(a_num_threads)
+    @executor_submit = @executor.java_method(:submit, [Java::JavaLang::Runnable.java_class])
+
+    thread_number = 0
+    streams.each do |stream|
+      @executor_submit.call(Kafka::Consumer.new(stream, thread_number, a_queue, @consumer_restart_on_error, @consumer_restart_sleep_ms))
+      thread_number += 1
+    end
+    @running = true
+  end
+
+  def running?
+    @running
+  end
+
   private
+
   def validate_required_arguments(options={})
     [:zk_connect, :group_id, :topic_id].each do |opt|
       raise(ArgumentError, "#{opt} is required.") unless options[opt]
     end
   end
 
-  public
-  def shutdown()
-    if @consumer
-      @consumer.shutdown()
-    end
-    if @executor
-      @executor.shutdown()
-    end
-    @running = false
-  end
-
-  public
-  def run(a_numThreads, a_queue)
-    begin
-      if @auto_offset_reset == 'smallest'
-        Java::kafka::utils::ZkUtils.maybeDeletePath(@zk_connect, "/consumers/#{@group_id}")
-      end
-
-      @consumer = Java::kafka::consumer::Consumer.createJavaConsumerConnector(createConsumerConfig())
-    rescue ZkException => e
-      raise KafkaError.new(e), "Got ZkException: #{e}"
-    end
-    topicCountMap = java.util.HashMap.new()
-    thread_value = a_numThreads.to_java Java::int
-    topicCountMap.put(@topic, thread_value)
-    consumerMap = @consumer.createMessageStreams(topicCountMap)
-    streams = Array.new(consumerMap[@topic])
-
-    @executor = Executors.newFixedThreadPool(a_numThreads)
-    @executor_submit = @executor.java_method(:submit, [Java::JavaLang::Runnable.java_class])
-
-    threadNumber = 0
-    for stream in streams
-      @executor_submit.call(Kafka::Consumer.new(stream, threadNumber, a_queue, @consumer_restart_on_error, @consumer_restart_sleep_ms))
-      threadNumber += 1
-    end
-    @running = true
-  end
-
-  public
-  def running?
-    @running
-  end
-
-  private
-  def createConsumerConfig()
-    properties = java.util.Properties.new()
-    properties.put("zookeeper.connect", @zk_connect)
-    properties.put("group.id", @group_id)
-    properties.put("zookeeper.connection.timeout.ms", @zk_connect_timeout)
-    properties.put("zookeeper.session.timeout.ms", @zk_session_timeout)
-    properties.put("zookeeper.sync.time.ms", @zk_sync_time)
-    properties.put("auto.commit.interval.ms", @auto_commit_interval)
-    properties.put("auto.offset.reset", @auto_offset_reset)
-    properties.put("rebalance.max.retries", @rebalance_max_retries)
-    properties.put("rebalance.backoff.ms", @rebalance_backoff_ms)
-    properties.put("socket.timeout.ms", @socket_timeout_ms)
-    properties.put("socket.receive.buffer.bytes", @socket_receive_buffer_bytes)
-    properties.put("fetch.message.max.bytes", @fetch_message_max_bytes)
-    properties.put("auto.commit.enable", @auto_commit_enable)
-    properties.put("queued.max.message.chunks", @queued_max_message_chunks)
-    properties.put("fetch.min.bytes", @fetch_min_bytes)
-    properties.put("fetch.wait.max.ms", @fetch_wait_max_ms)
-    properties.put("refresh.leader.backoff.ms", @refresh_leader_backoff_ms)
-    properties.put("consumer.timeout.ms", @consumer_timeout_ms)
+  def create_consumer_config
+    properties = java.util.Properties.new
+    properties.put('zookeeper.connect', @zk_connect)
+    properties.put('group.id', @group_id)
+    properties.put('zookeeper.connection.timeout.ms', @zk_connect_timeout)
+    properties.put('zookeeper.session.timeout.ms', @zk_session_timeout)
+    properties.put('zookeeper.sync.time.ms', @zk_sync_time)
+    properties.put('auto.commit.interval.ms', @auto_commit_interval)
+    properties.put('auto.offset.reset', @auto_offset_reset)
+    properties.put('rebalance.max.retries', @rebalance_max_retries)
+    properties.put('rebalance.backoff.ms', @rebalance_backoff_ms)
+    properties.put('socket.timeout.ms', @socket_timeout_ms)
+    properties.put('socket.receive.buffer.bytes', @socket_receive_buffer_bytes)
+    properties.put('fetch.message.max.bytes', @fetch_message_max_bytes)
+    properties.put('auto.commit.enable', @auto_commit_enable)
+    properties.put('queued.max.message.chunks', @queued_max_message_chunks)
+    properties.put('fetch.min.bytes', @fetch_min_bytes)
+    properties.put('fetch.wait.max.ms', @fetch_wait_max_ms)
+    properties.put('refresh.leader.backoff.ms', @refresh_leader_backoff_ms)
+    properties.put('consumer.timeout.ms', @consumer_timeout_ms)
     unless @consumer_id.nil?
       properties.put('consumer.id', @consumer_id)
     end
-    return Java::kafka::consumer::ConsumerConfig.new(properties)
+    Java::kafka::consumer::ConsumerConfig.new(properties)
   end
 end

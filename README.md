@@ -11,7 +11,7 @@
 
 ## About
 
-This gem is primarily used to wrap most of the [Kafka 0.8.0 high level consumer] and [Kafka 0.8.0 producer] API into
+This gem is primarily used to wrap most of the [Kafka 0.8.1.1 high level consumer] and [Kafka 0.8.1.1 producer] API into
 jruby.
 The [Kafka Consumer Group Example] is pretty much ported to this library.
 
@@ -21,7 +21,7 @@ The [Kafka Consumer Group Example] is pretty much ported to this library.
 
 ## Installation
 
-This package is now distruted via rubygems.org but you can build it using the following instructions.
+This package is now distributed via [RubyGems.org](http://rubygems.org) but you can build it using the following instructions.
 
 From the root of the project run:
 
@@ -57,7 +57,7 @@ make a producer
     producer_options = {:topic_id => "test", :broker_list => "localhost:9092"}
     producer = Kafka::Producer.new(producer_options)
     producer.connect()
-    producer.sendMsg(nil, "heres a test")
+    producer.sendMsg(nil, "here's a test")
 
 
 then a consumer
