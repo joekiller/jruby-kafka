@@ -43,7 +43,9 @@ class Kafka::Producer
   # metadata_broker_list: ["localhost:9092"] - REQUIRED: a seed list of kafka brokers
   def initialize(opts = {})
     @options = opts.reduce({}) do |opts, (k, v)|
-      opts[k.to_s.gsub(/_/, '.')] = v
+      unless v.nil?
+        opts[k.to_s.gsub(/_/, '.')] = v
+      end
       opts
     end
     if options['broker.list']
