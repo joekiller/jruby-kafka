@@ -54,6 +54,9 @@ class Kafka::Producer
     if options['metadata.broker.list'].is_a? Array
       options['metadata.broker.list'] = options['metadata.broker.list'].join(',')
     end
+    if options['compressed.topics'].is_a? Array
+      options['compressed.topics'] = options['compressed.topics'].join(',')
+    end
     validate_arguments
     @send_method = proc { throw StandardError.new "Producer is not connected" }
   end
