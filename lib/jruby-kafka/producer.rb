@@ -51,9 +51,6 @@ class Kafka::Producer
     if options['broker.list']
       options['metadata.broker.list'] = options.delete 'broker.list'
     end
-    if options['compressed.topics'].to_s == 'none'
-      options.delete 'compressed.topics'
-    end
     if options['metadata.broker.list'].is_a? Array
       options['metadata.broker.list'] = options['metadata.broker.list'].join(',')
     end
