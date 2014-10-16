@@ -159,11 +159,10 @@ class Kafka::Group
     rescue ZkException => e
       raise KafkaError.new(e), "Got ZkException: #{e}"
     end
-    topic_count_map = java.util.HashMap.new
+
     thread_value = a_num_threads.to_java Java::int
-    topic_count_map.put(@topic, thread_value)
-    consumer_map = @consumer.createMessageStreams(topic_count_map)
-    streams = Array.new(consumer_map[@topic])
+    topic_filter = Java::kafka::consumer::Whitelist.new(@topic)
+    streams = @consumer.createMessageStreamsByFilter(topic_filter, thread_value)
 
     @executor = Executors.newFixedThreadPool(a_num_threads)
     @executor_submit = @executor.java_method(:submit, [Java::JavaLang::Runnable.java_class])
