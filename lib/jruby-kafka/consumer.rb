@@ -28,7 +28,7 @@ class Kafka::Consumer
       begin
         while it.hasNext
           begin
-            @m_queue << it.next.message
+            @m_queue << it.next
           end
         end
       rescue Exception => e

@@ -68,7 +68,7 @@ class TestKafka < Test::Unit::TestCase
     puts(group.running?)
     group.shutdown
     until queue.empty?
-      puts(queue.pop)
+      puts(queue.pop.message)
     end
   end
 
@@ -85,7 +85,7 @@ class TestKafka < Test::Unit::TestCase
     Java::JavaLang::Thread.sleep 10000
     group.shutdown
     until queue.empty?
-      puts(queue.pop)
+      puts(queue.pop.message)
     end
   end
 end
