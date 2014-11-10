@@ -34,7 +34,7 @@ class Kafka::Producer
     message.send.max.retries  retry.backoff.ms              topic.metadata.refresh.interval.ms
     queue.buffering.max.ms    queue.buffering.max.messages  queue.enqueue.timeout.ms
     batch.num.messages        send.buffer.bytes             client.id
-    broker.list
+    broker.list               serializer.encoding
   ]
 
   attr_reader :producer, :send_method, :options
