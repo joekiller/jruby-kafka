@@ -55,7 +55,7 @@ class TestKafka < Test::Unit::TestCase
     options = {
         :zk_connect => 'localhost:2181',
         :group_id => 'test',
-        :topic_id => 'test',
+        :allow_topics => 't.*',
         :zk_connect_timeout => '1000',
         :consumer_timeout_ms => '10',
         :consumer_restart_sleep_ms => '5000',
@@ -83,7 +83,7 @@ class TestKafka < Test::Unit::TestCase
     options = {
         :zk_connect => 'localhost:2181',
         :group_id => 'beginning',
-        :topic_id => 'test',
+        :allow_topics => 't.*',
         :reset_beginning => 'from-beginning'
     }
     group = Kafka::Group.new(options)
