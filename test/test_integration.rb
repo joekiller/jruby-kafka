@@ -62,14 +62,20 @@ class TestKafka < Test::Unit::TestCase
         :consumer_restart_on_error => true
     }
     group = Kafka::Group.new(options)
-    puts(group.running?)
+    assert(!group.running?)
     group.run(1,queue)
     Java::JavaLang::Thread.sleep 30000
-    puts(group.running?)
+    assert(group.running?)
     group.shutdown
+    found = []
     until queue.empty?
-      puts(queue.pop)
+      found << queue.pop
     end
+    assert_equal([ "codec gzip test message",
+                   "codec none test message",
+                   "codec snappy test message",
+                   "test message" ],
+                 found.map(&:to_s).uniq.sort,)
   end
 
   def test_from_beginning
@@ -84,8 +90,15 @@ class TestKafka < Test::Unit::TestCase
     group.run(2,queue)
     Java::JavaLang::Thread.sleep 10000
     group.shutdown
+    found = []
     until queue.empty?
-      puts(queue.pop)
+      found << queue.pop
     end
+    assert_equal([ "codec gzip test message",
+                   "codec none test message",
+                   "codec snappy test message",
+                   "test message" ],
+                 found.map(&:to_s).uniq.sort)
   end
+
 end
