@@ -12,13 +12,6 @@ class Kafka::Group
   java_import 'java.util.concurrent.Executors'
   java_import 'org.I0Itec.zkclient.exception.ZkException'
 
-  @consumer
-  @executor
-  @topic
-  @auto_offset_reset
-  @zk_connect
-  @group_id
-
   # Create a Kafka client group
   #
   # options:
