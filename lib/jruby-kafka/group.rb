@@ -176,7 +176,7 @@ class Kafka::Group
   private
 
   def validate_required_arguments(options={})
-    [:zk_connect, :group_id, :topic_id].each do |opt|
+    [:zk_connect, :group_id].each do |opt|
       raise(ArgumentError, "#{opt} is required.") unless options[opt]
     end
     unless [ options[:topic_id],
