@@ -8,8 +8,8 @@ class TestKafka < Test::Unit::TestCase
 
   def test_producer
     options = {
-        :broker_list => 'localhost:9092',
-        :serializer_class => 'kafka.serializer.StringEncoder'
+      :broker_list => 'localhost:9092',
+      :serializer_class => 'kafka.serializer.StringEncoder'
     }
     producer = Kafka::Producer.new(options)
     producer.connect
@@ -18,8 +18,8 @@ class TestKafka < Test::Unit::TestCase
 
   def test_send_msg_deprecated
     options = {
-        :broker_list => 'localhost:9092',
-        :serializer_class => 'kafka.serializer.StringEncoder'
+      :broker_list => 'localhost:9092',
+      :serializer_class => 'kafka.serializer.StringEncoder'
     }
     producer = Kafka::Producer.new(options)
     producer.connect
@@ -28,9 +28,9 @@ class TestKafka < Test::Unit::TestCase
 
   def producer_compression_send(compression_codec='none')
     options = {
-        :broker_list => 'localhost:9092',
-        :compression_codec => compression_codec,
-        :serializer_class => 'kafka.serializer.StringEncoder'
+      :broker_list => 'localhost:9092',
+      :compression_codec => compression_codec,
+      :serializer_class => 'kafka.serializer.StringEncoder'
     }
     producer = Kafka::Producer.new(options)
     producer.connect
@@ -53,13 +53,13 @@ class TestKafka < Test::Unit::TestCase
   def test_run
     queue = SizedQueue.new(20)
     options = {
-        :zk_connect => 'localhost:2181',
-        :group_id => 'test',
-        :topic_id => 'test',
-        :zk_connect_timeout => '1000',
-        :consumer_timeout_ms => '10',
-        :consumer_restart_sleep_ms => '5000',
-        :consumer_restart_on_error => true
+      :zk_connect => 'localhost:2181',
+      :group_id => 'test',
+      :topic_id => 'test',
+      :zk_connect_timeout => '1000',
+      :consumer_timeout_ms => '10',
+      :consumer_restart_sleep_ms => '5000',
+      :consumer_restart_on_error => true
     }
     group = Kafka::Group.new(options)
     assert(!group.running?)
@@ -81,10 +81,10 @@ class TestKafka < Test::Unit::TestCase
   def test_from_beginning
     queue = SizedQueue.new(20)
     options = {
-        :zk_connect => 'localhost:2181',
-        :group_id => 'beginning',
-        :topic_id => 'test',
-        :reset_beginning => 'from-beginning'
+      :zk_connect => 'localhost:2181',
+      :group_id => 'beginning',
+      :topic_id => 'test',
+      :reset_beginning => 'from-beginning'
     }
     group = Kafka::Group.new(options)
     group.run(2,queue)
@@ -99,6 +99,59 @@ class TestKafka < Test::Unit::TestCase
                    "codec snappy test message",
                    "test message" ],
                  found.map(&:to_s).uniq.sort)
+  end
+
+  def produce_to_different_topics
+    options = {
+      :broker_list => 'localhost:9092',
+      :serializer_class => 'kafka.serializer.StringEncoder'
+    }
+    producer = Kafka::Producer.new(options)
+    producer.connect
+    producer.send_msg('apple', nil,      'apple message')
+    producer.send_msg('cabin', nil,      'cabin message')
+    producer.send_msg('carburetor', nil, 'carburetor message')
+  end
+
+  def test_topic_whitelist
+    queue = SizedQueue.new(20)
+    options = {
+      :zk_connect => 'localhost:2181',
+      :group_id => 'topics',
+      :allow_topics => 'ca.*',
+    }
+    group = Kafka::Group.new(options)
+    group.run(2,queue)
+    produce_to_different_topics
+    group.shutdown
+    found = []
+    until queue.empty?
+      found << queue.pop
+    end
+    assert(found.map(&:to_s).include?("cabin message"))
+    assert(found.map(&:to_s).include?("carburetor message"))
+    assert(!found.map(&:to_s).include?("apple message"))
+  end
+
+  def test_topic_blacklist
+
+    queue = SizedQueue.new(20)
+    options = {
+      :zk_connect => 'localhost:2181',
+      :group_id => 'topics',
+      :filter_topics => 'ca.*',
+    }
+    group = Kafka::Group.new(options)
+    produce_to_different_topics
+    group.run(2,queue)
+    group.shutdown
+    found = []
+    until queue.empty?
+      found << queue.pop
+    end
+    assert(!found.map(&:to_s).include?("cabin message"))
+    assert(!found.map(&:to_s).include?("carburetor message"))
+    assert(found.map(&:to_s).include?("apple message"))
   end
 
 end
