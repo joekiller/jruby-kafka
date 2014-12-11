@@ -126,11 +126,11 @@ class TestKafka < Test::Unit::TestCase
     group.shutdown
     found = []
     until queue.empty?
-      found << queue.pop
+      found << queue.pop.to_s
     end
-    assert(found.map(&:to_s).include?("cabin message"))
-    assert(found.map(&:to_s).include?("carburetor message"))
-    assert(!found.map(&:to_s).include?("apple message"))
+    assert(found.include?("cabin message"))
+    assert(found.include?("carburetor message"))
+    assert(!found.include?("apple message"))
   end
 
   def test_topic_blacklist
@@ -146,11 +146,11 @@ class TestKafka < Test::Unit::TestCase
     group.shutdown
     found = []
     until queue.empty?
-      found << queue.pop
+      found << queue.pop.to_s
     end
-    assert(!found.map(&:to_s).include?("cabin message"))
-    assert(!found.map(&:to_s).include?("carburetor message"))
-    assert(found.map(&:to_s).include?("apple message"))
+    assert(!found.include?("cabin message"))
+    assert(!found.include?("carburetor message"))
+    assert(found.include?("apple message"))
   end
 
 end
