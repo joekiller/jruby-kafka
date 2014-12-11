@@ -197,7 +197,7 @@ class Kafka::Group
       filter = Java::kafka::consumer::Whitelist.new(@topics_allowed)
       Array.new(@consumer.createMessageStreamsByFilter(filter, threads))
     else # @topics_filtered
-      filter = Java::kafka::consumer::Whitelist.new(@topics_filtered)
+      filter = Java::kafka::consumer::Blacklist.new(@topics_filtered)
       Array.new(@consumer.createMessageStreamsByFilter(filter, threads))
     end
   end
