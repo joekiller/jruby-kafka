@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.files         = files
   spec.require_paths << 'lib'
 
-  spec.add_dependency 'jbundler', '>= 0.5'
+  spec.add_dependency 'jbundler'
   spec.requirements << "jar 'org.apache.kafka:kafka_2.9.2', '0.8.1.1'"
   spec.requirements << "jar 'log4j:log4j', '1.2.14'"
 end

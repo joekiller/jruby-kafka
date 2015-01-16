@@ -1,3 +1,5 @@
+require 'maven/ruby/tasks'
+
 task :package do
   system('gem build jruby-kafka.gemspec')
 end
