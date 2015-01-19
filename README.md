@@ -25,7 +25,8 @@ This package is now distributed via [RubyGems.org](http://rubygems.org) but you 
 
 From the root of the project run:
 
-    $ rake package
+    $ bundle install
+    $ rake setup jar package
 
 You can run the following to install the resulting package:
 
@@ -46,12 +47,6 @@ instructions and have KAFKA_PATH set in the environment.
 
 make a producer
 
-    jar_dir = "path/to/dir/with/kafka/jars"
-
-    include Java
-    Dir.glob(File.join(jar_dir, "*.jar")) { |jar|
-      $CLASSPATH << jar
-    }
     require 'jruby-kafka'
 
     producer_options = {:topic_id => "test", :broker_list => "localhost:9092"}
@@ -62,10 +57,6 @@ make a producer
 
 then a consumer
 
-    include Java
-    Dir.glob(File.join(jar_dir, "*.jar")) { |jar|
-      $CLASSPATH << jar
-    }
     require 'jruby-kafka'
     queue = SizedQueue.new(20)
     group = Kafka::Group.new(options)

@@ -1,4 +1,3 @@
-require 'java'
 require 'jruby-kafka/namespace'
 
 # noinspection JRubyStringImportInspection

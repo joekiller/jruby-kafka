@@ -1,7 +1,4 @@
 # basically we are porting this https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example
-
-require 'java'
-
 require 'jruby-kafka/namespace'
 require 'jruby-kafka/error'
 
