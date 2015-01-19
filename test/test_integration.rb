@@ -2,7 +2,6 @@ require 'test/unit'
 
 class TestKafka < Test::Unit::TestCase
   def setup
-    require 'jbundler'
     $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
     require 'jruby-kafka'
   end
