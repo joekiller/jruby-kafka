@@ -24,8 +24,11 @@ class Kafka::Group
   # :zk_connect_timeout => "6000" - (optional) The max time that the client waits while establishing a connection to zookeeper.
   # :group_id => "group" - REQUIRED: The group id to consume on.
   # :topic_id => "topic" - REQUIRED: The topic id to consume on.
-  # :reset_beginning => "from-beginning" - (optional) If the consumer does not already have an established offset
-  #   to consume from, start with the earliest message present in the log rather than the latest message.
+  # :reset_beginning => "from-beginning" - (optional) reset the consumer group to start at the 
+  #   earliest message present in the log by clearing any offsets for the group stored in Zookeeper.
+  # :auto_offset_reset => "smallest" or "largest" - (optional, default 'largest') If the consumer does not already 
+  #   have an established offset to consume from, start with the earliest message present in the log (smallest) or 
+  #   after the last message in the log (largest).
   # :consumer_restart_on_error => "true" - (optional) Controls if consumer threads are to restart on caught exceptions.
   #   exceptions are logged.
   def initialize(options={})
@@ -37,6 +40,7 @@ class Kafka::Group
     @zk_session_timeout = '6000'
     @zk_connect_timeout = '6000'
     @zk_sync_time = '2000'
+    @reset_beginning = nil
     @auto_offset_reset = 'largest'
     @auto_commit_interval = '1000'
     @running = false
@@ -120,13 +124,12 @@ class Kafka::Group
       @consumer_restart_sleep_ms = "#{options[:consumer_restart_sleep_ms]}"
     end
 
-
     if options[:reset_beginning]
-      if options[:reset_beginning] == 'from-beginning'
-        @auto_offset_reset = 'smallest'
-      else
-        @auto_offset_reset = 'largest'
-      end
+      @reset_beginning = "#{options[:reset_beginning]}"
+    end
+
+    if options[:auto_offset_reset]
+      @auto_offset_reset = "#{options[:auto_offset_reset]}"
     end
 
     if options[:consumer_id]
@@ -148,7 +151,7 @@ class Kafka::Group
 
   def run(a_num_threads, a_queue)
     begin
-      if @auto_offset_reset == 'smallest'
+      if @reset_beginning == 'from-beginning'
         Java::kafka::utils::ZkUtils.maybeDeletePath(@zk_connect, "/consumers/#{@group_id}")
       end
 
