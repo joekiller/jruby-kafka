@@ -1,3 +1,4 @@
+require 'java'
 require 'jruby-kafka/namespace'
 
 # noinspection JRubyStringImportInspection
@@ -10,35 +11,31 @@ class Kafka::Consumer
   include Java::JavaLang::Runnable
   java_signature 'void run()'
 
-  @m_stream
-  @m_thread_number
-  @m_queue
+  def initialize(a_stream, a_thread_number, a_queue, restart_on_exception, a_sleep_ms)
+    @m_thread_number = a_thread_number
+    @m_stream = a_stream
+    @m_queue = a_queue
+    @m_restart_on_exception = restart_on_exception
+    @m_sleep_ms = 1.0 / 1000.0 * Float(a_sleep_ms)
+  end
 
-    def initialize(a_stream, a_thread_number, a_queue, restart_on_exception, a_sleep_ms)
-      @m_thread_number = a_thread_number
-      @m_stream = a_stream
-      @m_queue = a_queue
-      @m_restart_on_exception = restart_on_exception
-      @m_sleep_ms = 1.0 / 1000.0 * Float(a_sleep_ms)
-    end
-
-    def run
-      it = @m_stream.iterator
-      begin
-        while it.hasNext
-          begin
-            @m_queue << it.next
-          end
-        end
-      rescue Exception => e
-        puts("#{self.class.name} caught exception: #{e.class.name}")
-        puts(e.message) if e.message != ''
-        if @m_restart_on_exception == 'true'
-          sleep(@m_sleep_ms)
-          retry
-        else
-          raise e
+  def run
+    it = @m_stream.iterator
+    begin
+      while it.hasNext
+        begin
+          @m_queue << it.next.message
         end
       end
+    rescue Exception => e
+      puts("#{self.class.name} caught exception: #{e.class.name}")
+      puts(e.message) if e.message != ''
+      if @m_restart_on_exception
+        sleep(@m_sleep_ms)
+        retry
+      else
+        raise e
+      end
     end
+  end
 end

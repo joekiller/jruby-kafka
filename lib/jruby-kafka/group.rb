@@ -9,13 +9,6 @@ class Kafka::Group
   java_import 'java.util.concurrent.Executors'
   java_import 'org.I0Itec.zkclient.exception.ZkException'
 
-  @consumer
-  @executor
-  @topic
-  @auto_offset_reset
-  @zk_connect
-  @group_id
-
   # Create a Kafka client group
   #
   # options:
@@ -37,6 +30,8 @@ class Kafka::Group
     @zk_connect = options[:zk_connect]
     @group_id = options[:group_id]
     @topic = options[:topic_id]
+    @topics_allowed = options[:allow_topics]
+    @topics_filtered = options[:filter_topics]
     @zk_session_timeout = '6000'
     @zk_connect_timeout = '6000'
     @zk_sync_time = '2000'
@@ -162,11 +157,9 @@ class Kafka::Group
     rescue ZkException => e
       raise KafkaError.new(e), "Got ZkException: #{e}"
     end
-    topic_count_map = java.util.HashMap.new
+
     thread_value = a_num_threads.to_java Java::int
-    topic_count_map.put(@topic, thread_value)
-    consumer_map = @consumer.createMessageStreams(topic_count_map)
-    streams = Array.new(consumer_map[@topic])
+    streams = get_streams(thread_value)
 
     @executor = Executors.newFixedThreadPool(a_num_threads)
     @executor_submit = @executor.java_method(:submit, [Java::JavaLang::Runnable.java_class])
@@ -186,8 +179,29 @@ class Kafka::Group
   private
 
   def validate_required_arguments(options={})
-    [:zk_connect, :group_id, :topic_id].each do |opt|
+    [:zk_connect, :group_id].each do |opt|
       raise(ArgumentError, "#{opt} is required.") unless options[opt]
+    end
+    unless [ options[:topic_id],
+             options[:allow_topics],
+             options[:filter_topics] ].compact.length == 1
+      raise(ArgumentError,
+            "exactly one of topic_id, allow_topics, filter_topics is required.")
+    end
+  end
+
+  def get_streams(threads)
+    if @topic
+      topic_count_map = java.util.HashMap.new
+      topic_count_map.put(@topic, threads)
+      consumer_map = @consumer.createMessageStreams(topic_count_map)
+      Array.new(consumer_map[@topic])
+    elsif @topics_allowed
+      filter = Java::kafka::consumer::Whitelist.new(@topics_allowed)
+      Array.new(@consumer.createMessageStreamsByFilter(filter, threads))
+    else # @topics_filtered
+      filter = Java::kafka::consumer::Blacklist.new(@topics_filtered)
+      Array.new(@consumer.createMessageStreamsByFilter(filter, threads))
     end
   end
 
