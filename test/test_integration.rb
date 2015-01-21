@@ -78,7 +78,8 @@ class TestKafka < Test::Unit::TestCase
         :zk_connect => 'localhost:2181',
         :group_id => 'beginning',
         :topic_id => 'test',
-        :reset_beginning => 'from-beginning'
+        :reset_beginning => 'from-beginning',
+        :auto_offset_reset => 'smallest'
     }
     group = Kafka::Group.new(options)
     group.run(2,queue)
