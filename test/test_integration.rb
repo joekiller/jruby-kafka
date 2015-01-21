@@ -6,7 +6,7 @@ class TestKafka < Test::Unit::TestCase
     require 'jruby-kafka'
   end
 
-  def test_producer
+  def send_msg
     options = {
       :broker_list => 'localhost:9092',
       :serializer_class => 'kafka.serializer.StringEncoder'
@@ -16,7 +16,7 @@ class TestKafka < Test::Unit::TestCase
     producer.send_msg('test',nil, 'test message')
   end
 
-  def test_send_msg_deprecated
+  def send_msg_deprecated
     options = {
       :broker_list => 'localhost:9092',
       :serializer_class => 'kafka.serializer.StringEncoder'
@@ -37,17 +37,24 @@ class TestKafka < Test::Unit::TestCase
     producer.send_msg('test',nil, "codec #{compression_codec} test message")
   end
 
-  def test_compression_none
+  def send_compression_none
     producer_compression_send('none')
   end
 
-  def test_compression_gzip
+  def send_compression_gzip
     producer_compression_send('gzip')
   end
 
-  def test_compression_snappy
+  def send_compression_snappy
     #snappy test may fail on mac, see https://code.google.com/p/snappy-java/issues/detail?id=39
     producer_compression_send('snappy')
+  end
+
+  def send_test_messages
+    send_compression_none
+    send_compression_gzip
+    send_compression_snappy
+    send_msg
   end
 
   def test_run
@@ -64,12 +71,12 @@ class TestKafka < Test::Unit::TestCase
     group = Kafka::Group.new(options)
     assert(!group.running?)
     group.run(1,queue)
-    Java::JavaLang::Thread.sleep 30000
+    send_test_messages
     assert(group.running?)
     group.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.message
+      found << queue.pop.message.to_s
     end
     assert_equal([ "codec gzip test message",
                    "codec none test message",
@@ -93,7 +100,7 @@ class TestKafka < Test::Unit::TestCase
     group.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.message
+      found << queue.pop.message.to_s
     end
     assert_equal([ "codec gzip test message",
                    "codec none test message",
@@ -127,7 +134,7 @@ class TestKafka < Test::Unit::TestCase
     group.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.to_s
+      found << queue.pop.message.to_s
     end
     assert(found.include?("cabin message"))
     assert(found.include?("carburetor message"))
@@ -147,7 +154,7 @@ class TestKafka < Test::Unit::TestCase
     group.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.to_s
+      found << queue.pop.message.to_s
     end
     assert(!found.include?("cabin message"))
     assert(!found.include?("carburetor message"))
