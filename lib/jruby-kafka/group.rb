@@ -124,12 +124,15 @@ class Kafka::Group
       @consumer_restart_sleep_ms = "#{options[:consumer_restart_sleep_ms]}"
     end
 
-    if options[:reset_beginning]
-      @reset_beginning = "#{options[:reset_beginning]}"
-    end
-
     if options[:auto_offset_reset]
       @auto_offset_reset = "#{options[:auto_offset_reset]}"
+    end
+
+    if options[:reset_beginning]
+      if not options[:auto_offset_reset] || options[:auto_offset_reset] != 'smallest'
+        raise KafkaError.new('reset_beginning => from-beginning must be used with auto_offset_reset => smallest')
+      end
+      @reset_beginning = "#{options[:reset_beginning]}"
     end
 
     if options[:consumer_id]
