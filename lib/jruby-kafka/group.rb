@@ -53,6 +53,8 @@ class Kafka::Group
     @consumer_restart_on_error = "#{false}"
     @consumer_restart_sleep_ms = '0'
     @consumer_id = nil
+    @key_decoder_class = "kafka.serializer.DefaultDecoder"
+    @value_decoder_class = "kafka.serializer.DefaultDecoder"
 
     if options[:zk_connect_timeout]
       @zk_connect_timeout = "#{options[:zk_connect_timeout]}"
@@ -123,6 +125,14 @@ class Kafka::Group
       @auto_offset_reset = "#{options[:auto_offset_reset]}"
     end
 
+    if options[:key_decoder_class]
+      @key_decoder_class = "#{options[:key_decoder_class]}"
+    end
+
+    if options[:value_decoder_class]
+      @value_decoder_class = "#{options[:value_decoder_class]}"
+    end
+
     if options[:reset_beginning]
       if not options[:auto_offset_reset] || options[:auto_offset_reset] != 'smallest'
         raise KafkaError.new('reset_beginning => from-beginning must be used with auto_offset_reset => smallest')
@@ -191,17 +201,20 @@ class Kafka::Group
   end
 
   def get_streams(threads)
+    constructor_param_class_name = "kafka.utils.VerifiableProperties"
+    key_decoder_instance = Java::JavaClass.for_name(@key_decoder_class).constructor(constructor_param_class_name).new_instance(nil)
+    value_decoder_instance = Java::JavaClass.for_name(@value_decoder_class).constructor(constructor_param_class_name).new_instance(nil)
     if @topic
       topic_count_map = java.util.HashMap.new
       topic_count_map.put(@topic, threads)
-      consumer_map = @consumer.createMessageStreams(topic_count_map)
+      consumer_map = @consumer.createMessageStreams(topic_count_map, key_decoder_instance, value_decoder_instance)
       Array.new(consumer_map[@topic])
     elsif @topics_allowed
       filter = Java::kafka::consumer::Whitelist.new(@topics_allowed)
-      Array.new(@consumer.createMessageStreamsByFilter(filter, threads))
+      Array.new(@consumer.createMessageStreamsByFilter(filter, threads, key_decoder_instance, value_decoder_instance))
     else # @topics_filtered
       filter = Java::kafka::consumer::Blacklist.new(@topics_filtered)
-      Array.new(@consumer.createMessageStreamsByFilter(filter, threads))
+      Array.new(@consumer.createMessageStreamsByFilter(filter, threads, key_decoder_instance, value_decoder_instance))
     end
   end
 
