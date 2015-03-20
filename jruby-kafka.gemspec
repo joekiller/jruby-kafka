@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
 
   spec.name          = 'jruby-kafka'
-  spec.version       = '1.2.0'
+  spec.version       = '1.3.0'
   spec.authors       = ['Joseph Lawson']
   spec.email         = ['joe@joekiller.com']
   spec.description   = 'this is primarily to be used as an interface for logstash'
@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir[ 'lib/**/*.rb', 'lib/**/*.jar', 'lib/**/*.xml' ]
 
   #Jar dependencies
-  spec.requirements << "jar 'org.apache.kafka:kafka_2.9.2', '0.8.1.1'"
+  spec.requirements << "jar 'org.apache.kafka:kafka_2.10', '0.8.2.1'"
   spec.requirements << "jar 'org.slf4j:slf4j-log4j12', '1.7.10'"
 
   # Gem dependencies
