@@ -45,32 +45,33 @@ instructions and have KAFKA_PATH set in the environment.
 
 #### Using in irb
 
-make a producer
+Make a producer
 
-    require 'jruby-kafka'
+```ruby
+require 'jruby-kafka'
 
-    producer_options = {:topic_id => "test", :broker_list => "localhost:9092"}
-    producer = Kafka::Producer.new(producer_options)
-    producer.connect()
-    producer.sendMsg(nil, "here's a test")
+producer_options = {:broker_list => "localhost:9092", "serializer.class" => "kafka.serializer.StringEncoder"}
 
+producer = Kafka::Producer.new(producer_options)
+producer.connect()
+producer.send_msg("test", nil, "here's a test message")    
+```
 
-then a consumer
+then a consumer that gets first 20 things & prints out
 
-    require 'jruby-kafka'
-    queue = SizedQueue.new(20)
-    group = Kafka::Group.new(options)
-    group.run(1,queue)
-    Java::JavaLang::Thread.sleep 3000
+```ruby
+require 'jruby-kafka'
+queue = SizedQueue.new(20)
+group = Kafka::Group.new(options)
+group.run(1,queue)
+Java::JavaLang::Thread.sleep 3000
 
-    #just gets first 20 things & prints out
-    until queue.empty?
-      puts(queue.pop)
-    end
+until queue.empty?
+  puts(queue.pop)
+end
 
-    group.shutdown()
-
-
+group.shutdown()
+```
 
 #### Using in logstash:
 
