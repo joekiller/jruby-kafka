@@ -43,9 +43,9 @@ instructions and have KAFKA_PATH set in the environment.
 
 [kafka quickstart]: http://kafka.apache.org/documentation.html#quickstart
 
-#### Using in irb
+#### Usage
 
-Make a producer
+The following producer code sends a message to a `test` topic
 
 ```ruby
 require 'jruby-kafka'
@@ -57,20 +57,32 @@ producer.connect()
 producer.send_msg("test", nil, "here's a test message")    
 ```
 
-then a consumer that gets first 20 things & prints out
+The following consumer example indefinitely listens to the `test` topic and prints out messages as they are received from Kafka:
 
 ```ruby
 require 'jruby-kafka'
-queue = SizedQueue.new(20)
-group = Kafka::Group.new(options)
-group.run(1,queue)
-Java::JavaLang::Thread.sleep 3000
 
-until queue.empty?
-  puts(queue.pop)
+consumer_options = {
+  :topic_id => "test", 
+  :zk_connect => "localhost:2181", 
+  :group_id => "my_consumer_group", 
+  :reset_beginning => "from-beginning", 
+  :auto_offset_reset => "smallest"
+}
+
+consumer_group = Kafka::Group.new(consumer_options)
+queue = SizedQueue.new(20)
+consumer_group.run(1,queue)
+
+count = 0
+while true
+  if !queue.empty?
+    puts "#{count}\t#{queue.pop.message.to_s}"
+    count += 1
+  end
 end
 
-group.shutdown()
+consumer_group.shutdown()
 ```
 
 #### Using in logstash:
