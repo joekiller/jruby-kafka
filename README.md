@@ -78,14 +78,19 @@ queue = SizedQueue.new(20)
 consumer_group.run(1,queue)
 
 count = 0
-while true
+
+trap('SIGINT') do
+  consumer_group.shutdown()
+  puts "Consumed #{count} messages"
+  exit
+end
+
+loop do
   if !queue.empty?
     puts "#{count}\t#{queue.pop.message.to_s}"
     count += 1
   end
 end
-
-consumer_group.shutdown()
 ```
 
 #### Using in logstash:
