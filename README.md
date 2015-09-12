@@ -48,7 +48,7 @@ instructions and have KAFKA_PATH set in the environment.
 
 #### Usage
 
-The following producer code sends a message to a `test` topic
+The following producer code sends a message to a `test` topic.
 
 ```ruby
 require 'jruby-kafka'
@@ -60,37 +60,34 @@ producer.connect()
 producer.send_msg("test", nil, "here's a test message")    
 ```
 
-The following consumer example indefinitely listens to the `test` topic and prints out messages as they are received from Kafka:
+The following consumer example is the Ruby equivalent of the Kafka high-level consumer group example. It listens for 10 seconds to the `test` topic and prints out messages as they are received from Kafka in two threads.  The `test` topic should have at least two partitions for each thread to receive messages.
 
 ```ruby
 require 'jruby-kafka'
 
-consumer_options = {
-  :topic_id => "test", 
-  :zk_connect => "localhost:2181", 
-  :group_id => "my_consumer_group", 
-  :reset_beginning => "from-beginning", 
-  :auto_offset_reset => "smallest"
+config = {
+  zookeeper_connect:  'localhost:2181',
+  group_id:           'my_consumer_group',
+  topic:              'test',
+  num_streams:        2,
+  auto_offset_reset:  "smallest"
 }
 
-consumer_group = Kafka::Group.new(consumer_options)
-queue = SizedQueue.new(20)
-consumer_group.run(1,queue)
+consumer = Kafka::Consumer.new(consumer_options)
 
-count = 0
-
-trap('SIGINT') do
-  consumer_group.shutdown()
-  puts "Consumed #{count} messages"
-  exit
+def consumer_test(stream, thread_num)
+  it = stream.iterator
+  puts "Thread #{thread_num}: #{it.next.message.to_s}" while it.hasNext 
+  puts "Shutting down Thread: #{thread_num}"
 end
 
-loop do
-  if !queue.empty?
-    puts "#{count}\t#{queue.pop.message.to_s}"
-    count += 1
-  end
+streams  = consumer.message_streams
+streams.each_with_index do |stream, thread_num|
+  Thread.new { consumer_test stream, thread_num }
 end
+
+sleep 10
+consumer.shutdown
 ```
 
 #### Using in logstash:
