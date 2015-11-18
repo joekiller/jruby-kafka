@@ -65,7 +65,7 @@ The following consumer example is the Ruby equivalent of the Kafka high-level co
 ```ruby
 require 'jruby-kafka'
 
-config = {
+consumer_options = {
   zookeeper_connect:  'localhost:2181',
   group_id:           'my_consumer_group',
   topic:              'test',
