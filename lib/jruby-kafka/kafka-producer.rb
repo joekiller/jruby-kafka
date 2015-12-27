@@ -60,7 +60,7 @@ class Kafka::KafkaProducer
   end
 
   # throws FailedToSendMessageException or if not connected, StandardError.
-  def send_msg(topic, partition, key, value)
+  def send_msg(topic, partition, key, value, &block)
     if block
       send_cb_method.call(ProducerRecord.new(topic, partition, key, value), RubyCallback.new(block))
     else
