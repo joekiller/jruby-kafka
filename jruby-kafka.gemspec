@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   # Gem dependencies
   spec.add_runtime_dependency 'jar-dependencies', '~> 0'
-  spec.add_runtime_dependency 'ruby-maven', '~> 3.1'
+  spec.add_runtime_dependency 'ruby-maven', '~> 3.3.8'
 
   spec.add_development_dependency 'rake', '~> 10.4'
 end
