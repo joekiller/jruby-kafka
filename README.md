@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-* [Apache Kafka] version 0.8.1.1 installed and running.
+* [Apache Kafka] version 0.8.2.2 installed and running.
 
 * [JRuby] installed.
 
@@ -11,12 +11,12 @@
 
 ## About
 
-This gem is primarily used to wrap most of the [Kafka 0.8.1.1 high level consumer] and [Kafka 0.8.1.1 producer] API into
+This gem is primarily used to wrap most of the [Kafka 0.8.2.2 high level consumer] and [Kafka 0.8.2.2 producer] API into
 jruby.
 The [Kafka Consumer Group Example] is pretty much ported to this library.
 
-[Kafka 0.8.1.1 high level consumer]: http://kafka.apache.org/documentation.html#highlevelconsumerapi
-[Kafka 0.8.1.1 producer]: https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example
+[Kafka 0.8.2.2 high level consumer]: http://kafka.apache.org/documentation.html#highlevelconsumerapi
+[Kafka 0.8.2.2 producer]: https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+Producer+Example
 [Kafka Consumer Group Example]: https://cwiki.apache.org/confluence/display/KAFKA/Consumer+Group+Example
 
 ## Installation

@@ -73,6 +73,7 @@ class TestKafka < Test::Unit::TestCase
     group.run(1,queue)
     send_test_messages
     assert(group.running?)
+    Java::JavaLang::Thread.sleep 5000
     group.shutdown
     found = []
     until queue.empty?
@@ -95,8 +96,8 @@ class TestKafka < Test::Unit::TestCase
       :auto_offset_reset => 'smallest'
     }
     group = Kafka::Group.new(options)
-    group.run(2,queue)
-    Java::JavaLang::Thread.sleep 10000
+    group.run(1,queue)
+    Java::JavaLang::Thread.sleep 5000
     group.shutdown
     found = []
     until queue.empty?
@@ -131,6 +132,7 @@ class TestKafka < Test::Unit::TestCase
     group = Kafka::Group.new(options)
     group.run(2,queue)
     produce_to_different_topics
+    Java::JavaLang::Thread.sleep 5000
     group.shutdown
     found = []
     until queue.empty?
@@ -151,6 +153,7 @@ class TestKafka < Test::Unit::TestCase
     group = Kafka::Group.new(options)
     produce_to_different_topics
     group.run(2,queue)
+    Java::JavaLang::Thread.sleep 5000
     group.shutdown
     found = []
     until queue.empty?
