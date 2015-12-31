@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
 
   #Jar dependencies
   spec.requirements << "jar 'org.apache.kafka:kafka_2.10', '0.8.2.2'"
-  spec.requirements << "jar 'org.slf4j:slf4j-log4j12', '1.7.10'"
+  spec.requirements << "jar 'org.slf4j:slf4j-log4j12', '1.7.13'"
 
   # Gem dependencies
   spec.add_runtime_dependency 'jar-dependencies', '~> 0'
