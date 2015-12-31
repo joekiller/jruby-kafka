@@ -57,26 +57,30 @@ class TestKafka < Test::Unit::TestCase
     send_msg
   end
 
+  def consumer_test(stream, thread_num, queue)
+    it = stream.iterator
+    queue << it.next.message.to_s while it.hasNext
+    puts "Shutting down Thread: #{thread_num}"
+  end
+
   def test_run
     queue = SizedQueue.new(20)
     options = {
-      :zk_connect => 'localhost:2181',
+      :zookeeper_connect => 'localhost:2181',
       :group_id => 'test',
-      :topic_id => 'test',
-      :zk_connect_timeout => '1000',
-      :consumer_timeout_ms => '10',
-      :consumer_restart_sleep_ms => '5000',
-      :consumer_restart_on_error => true
+      :topic => 'test'
     }
-    group = Kafka::Group.new(options)
-    assert(!group.running?)
-    group.run(1,queue)
     send_test_messages
-    assert(group.running?)
-    group.shutdown
+    consumer = Kafka::Consumer.new(options)
+    streams = consumer.message_streams
+    streams.each_with_index do |stream, thread_num|
+      Thread.new { consumer_test stream, thread_num, queue}
+    end
+    sleep 10
+    consumer.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.message.to_s
+      found << queue.pop
     end
     assert_equal([ "codec gzip test message",
                    "codec none test message",
@@ -88,19 +92,22 @@ class TestKafka < Test::Unit::TestCase
   def test_from_beginning
     queue = SizedQueue.new(20)
     options = {
-      :zk_connect => 'localhost:2181',
+      :zookeeper_connect => 'localhost:2181',
       :group_id => 'beginning',
-      :topic_id => 'test',
+      :topic => 'test',
       :reset_beginning => 'from-beginning',
       :auto_offset_reset => 'smallest'
     }
-    group = Kafka::Group.new(options)
-    group.run(2,queue)
-    Java::JavaLang::Thread.sleep 10000
-    group.shutdown
+    consumer = Kafka::Consumer.new(options)
+    streams = consumer.message_streams
+    streams.each_with_index do |stream, thread_num|
+      Thread.new { consumer_test stream, thread_num, queue}
+    end
+    sleep 10
+    consumer.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.message.to_s
+      found << queue.pop
     end
     assert_equal([ "codec gzip test message",
                    "codec none test message",
@@ -124,17 +131,21 @@ class TestKafka < Test::Unit::TestCase
   def test_topic_whitelist
     queue = SizedQueue.new(20)
     options = {
-      :zk_connect => 'localhost:2181',
+      :zookeeper_connect => 'localhost:2181',
       :group_id => 'topics',
-      :allow_topics => 'ca.*',
+      :include_topics => 'ca.*',
     }
-    group = Kafka::Group.new(options)
-    group.run(2,queue)
     produce_to_different_topics
-    group.shutdown
+    consumer = Kafka::Consumer.new(options)
+    streams = consumer.message_streams
+    streams.each_with_index do |stream, thread_num|
+      Thread.new { consumer_test stream, thread_num, queue}
+    end
+    sleep 10
+    consumer.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.message.to_s
+      found << queue.pop
     end
     assert(found.include?("cabin message"))
     assert(found.include?("carburetor message"))
@@ -144,17 +155,21 @@ class TestKafka < Test::Unit::TestCase
   def test_topic_blacklist
     queue = SizedQueue.new(20)
     options = {
-      :zk_connect => 'localhost:2181',
+      :zookeeper_connect => 'localhost:2181',
       :group_id => 'topics',
-      :filter_topics => 'ca.*',
+      :exclude_topics => 'ca.*',
     }
-    group = Kafka::Group.new(options)
     produce_to_different_topics
-    group.run(2,queue)
-    group.shutdown
+    consumer = Kafka::Consumer.new(options)
+    streams = consumer.message_streams
+    streams.each_with_index do |stream, thread_num|
+      Thread.new { consumer_test stream, thread_num, queue}
+    end
+    sleep 10
+    consumer.shutdown
     found = []
     until queue.empty?
-      found << queue.pop.message.to_s
+      found << queue.pop
     end
     assert(!found.include?("cabin message"))
     assert(!found.include?("carburetor message"))
