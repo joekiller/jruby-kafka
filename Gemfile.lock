@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jruby-kafka (1.5.0-java)
+    jruby-kafka (1.4.1-java)
       jar-dependencies (~> 0)
       ruby-maven (~> 3.3)
 

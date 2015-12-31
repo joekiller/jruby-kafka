@@ -17,3 +17,7 @@ tmp
 target
 .jbundler
 Jarfile.lock
+.mvn
+.idea
+.polyglot.Mavenfile
+Gemfile.lock

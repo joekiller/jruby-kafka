@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
 
   spec.name          = 'jruby-kafka'
-  spec.version       = '1.5.0'
+  spec.version       = '1.4.0'
   spec.authors       = ['Joseph Lawson']
   spec.email         = ['joe@joekiller.com']
   spec.description   = 'this is primarily to be used as an interface for logstash'
