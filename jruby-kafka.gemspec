@@ -1,7 +1,7 @@
 Gem::Specification.new do |spec|
 
   spec.name          = 'jruby-kafka'
-  spec.version       = '1.4.0'
+  spec.version       = '1.5.0'
   spec.authors       = ['Joseph Lawson']
   spec.email         = ['joe@joekiller.com']
   spec.description   = 'this is primarily to be used as an interface for logstash'
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   # Gem dependencies
   spec.add_runtime_dependency 'jar-dependencies', '~> 0'
-  spec.add_runtime_dependency 'ruby-maven', '~> 3.1'
+  spec.add_runtime_dependency 'ruby-maven', '~> 3.3'
 
   spec.add_development_dependency 'rake', '~> 10.4'
 end

@@ -1,37 +1,18 @@
 PATH
   remote: .
   specs:
-    jruby-kafka (1.4.0-java)
+    jruby-kafka (1.5.0-java)
       jar-dependencies (~> 0)
-      ruby-maven (~> 3.1)
+      ruby-maven (~> 3.3)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    axiom-types (0.1.1)
-      descendants_tracker (~> 0.0.4)
-      ice_nine (~> 0.11.0)
-      thread_safe (~> 0.3, >= 0.3.1)
-    coercible (1.0.0)
-      descendants_tracker (~> 0.0.1)
-    descendants_tracker (0.0.4)
-      thread_safe (~> 0.3, >= 0.3.1)
-    equalizer (0.0.10)
-    ice_nine (0.11.1)
-    jar-dependencies (0.2.0)
-    maven-tools (1.0.8)
-      virtus (~> 1.0)
+    jar-dependencies (0.3.1)
     rake (10.4.2)
-    ruby-maven (3.1.1.0.11)
-      maven-tools (~> 1.0.8)
-      ruby-maven-libs (= 3.1.1)
-    ruby-maven-libs (3.1.1)
-    thread_safe (0.3.5-java)
-    virtus (1.0.5)
-      axiom-types (~> 0.1)
-      coercible (~> 1.0)
-      descendants_tracker (~> 0.0, >= 0.0.3)
-      equalizer (~> 0.0, >= 0.0.9)
+    ruby-maven (3.3.8)
+      ruby-maven-libs (~> 3.3.1)
+    ruby-maven-libs (3.3.3)
 
 PLATFORMS
   java
@@ -39,3 +20,6 @@ PLATFORMS
 DEPENDENCIES
   jruby-kafka!
   rake (~> 10.4)
+
+BUNDLED WITH
+   1.11.2
