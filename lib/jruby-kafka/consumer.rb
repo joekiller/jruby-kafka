@@ -24,7 +24,7 @@ class Kafka::Consumer
   #
   # For other configuration properties and their default values see 
   # https://kafka.apache.org/08/configuration.html#consumerconfigs and
-  # https://github.com/apache/kafka/blob/0.8.2.1/core/src/main/scala/kafka/consumer/ConsumerConfig.scala#L90-L182.
+  # https://github.com/apache/kafka/blob/0.8.2.2/core/src/main/scala/kafka/consumer/ConsumerConfig.scala#L90-L182.
   #
   def initialize(config={})
     validate_arguments config
@@ -46,7 +46,7 @@ class Kafka::Consumer
   #   :num_stream configuration parameter. A stream is essentially a queue of incomnig messages
   #   from Kafka topic partitions.
   #
-  # @see http://apache.osuosl.org/kafka/0.8.2.1/scaladoc/index.html#kafka.consumer.KafkaStream
+  # @see http://apache.osuosl.org/kafka/0.8.2.2/scaladoc/index.html#kafka.consumer.KafkaStream
   # 
   # @note KafkaStreams instances are not thread-safe.
   def message_streams
