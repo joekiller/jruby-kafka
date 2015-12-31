@@ -1,3 +1,24 @@
+2.0.0 (December 31, 2015)
+    # general
+    - Updated integration tests to support new consumer.
+    - Updated documentation to better reference Kafka 0.8.2.2.
+    # consumer
+    - Simplified for better parallelism. (#33) Thank you @eliaslevy.
+    # producer
+    - Updated to now support send callback. (#31) Thank you @eliaslevy.
+    - Fixed callback block variable throwing error when not defined. (#37) Thank you @ashangit.
+1.5.0 (December 32, 2015)
+    # general
+    - Updated to support Kafka 0.8.2.2. (#37) Thank you @ashangit.
+    - Fixed typos in README. (#35) Thank you @Ben-M.
+    - updated producer example and github code styling. (#26) Thank you @aliekens.
+    - Imporoved consumer exampled in README. (#27) Thank you @arcz.
+1.4.0 (March 22, 2015)
+    # consumer
+    - add key/value decoder options to Group for dynamically using custom decoder for consuming kafka messages. (#23) Thank you @talevy.
+1.1.2 (February 27, 2015)
+1.1.1 (February 25, 2015)
+1.1.0 (February 23, 2015)
 0.2.1 (September 22, 2014)
     # producer
     - fixed argument parser including nil options
