@@ -1,4 +1,4 @@
-2.0.0 (December 31, 2015)
+2.0 (December 31, 2015)
     # general
     - Updated integration tests to support new consumer.
     - Updated documentation to better reference Kafka 0.8.2.2.
