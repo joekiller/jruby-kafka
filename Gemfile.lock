@@ -3,7 +3,7 @@ PATH
   specs:
     jruby-kafka (1.5.0-java)
       jar-dependencies (~> 0)
-      ruby-maven (~> 3.3.8)
+      ruby-maven (~> 3.3)
 
 GEM
   remote: https://rubygems.org/
