@@ -7,7 +7,7 @@
     # producer
     - Updated to now support send callback. (#31) Thank you @eliaslevy.
     - Fixed callback block variable throwing error when not defined. (#37) Thank you @ashangit.
-1.5.0 (December 32, 2015)
+1.5.0 (December 31, 2015)
     # general
     - Updated to support Kafka 0.8.2.2. (#37) Thank you @ashangit.
     - Fixed typos in README. (#35) Thank you @Ben-M.
