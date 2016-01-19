@@ -20,7 +20,7 @@ class TestKafka < Test::Unit::TestCase
     future = send_msg
     assert_not_nil(future)
     begin
-      timeout(5) do
+      timeout(10) do
         until future.isDone() do
           next
         end
@@ -28,7 +28,8 @@ class TestKafka < Test::Unit::TestCase
     end
     assert(future.isDone(), 'expected message to be done')
     assert(future.get().topic(), 'test')
-    assert(future.get().partition(), 0)
+    assert_equal(future.get().partition(), 0)
+
   end
 
   def send_msg_cb(&block)
@@ -47,7 +48,7 @@ class TestKafka < Test::Unit::TestCase
     future = send_msg_cb { |md,e| metadata = md; exception = e }
     assert_not_nil(future)    
     begin
-      timeout(5) do
+      timeout(10) do
         while metadata.nil? && exception.nil? do
           next
         end
