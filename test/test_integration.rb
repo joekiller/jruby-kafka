@@ -1,10 +1,8 @@
 require 'test/unit'
+require 'jruby-kafka'
+require 'util'
 
 class TestKafka < Test::Unit::TestCase
-  def setup
-    $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-    require 'jruby-kafka'
-  end
 
   def send_msg
     options = {
@@ -55,12 +53,6 @@ class TestKafka < Test::Unit::TestCase
     send_compression_gzip
     send_compression_snappy
     send_msg
-  end
-
-  def consumer_test(stream, thread_num, queue)
-    it = stream.iterator
-    queue << it.next.message.to_s while it.hasNext
-    puts "Shutting down Thread: #{thread_num}"
   end
 
   def test_run
