@@ -7,6 +7,7 @@ cache:
 rvm:
   - jruby-19mode
 before_install:
+  - gem install jar-dependencies
   - bundle install
   - rake compile
   - test/script/setup.sh
