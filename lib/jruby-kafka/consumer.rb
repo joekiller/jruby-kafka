@@ -2,6 +2,7 @@ require 'java'
 require 'jruby-kafka/namespace'
 
 class Kafka::Consumer
+  java_import 'org.I0Itec.zkclient.exception.ZkException'
   # Create a Kafka high-level consumer.
   #
   # @param [Hash] config the consumer configuration.
@@ -19,6 +20,8 @@ class Kafka::Consumer
   #   message key decoder.
   # @option config [String]  :msg_decoder ('kafka.serializer.DefaultDecoder') Java class name for
   #   message value decoder.
+  # @option config [String]  :reset_beginning Delete existing consumer group offsets. Must be "from-beginning" to have
+  #   any effect. :auto_offset_reset must be also be "smallest".
   #
   # One and only one of :topic, :include_topics, or :exclude_topics must be provided.
   #
@@ -29,13 +32,14 @@ class Kafka::Consumer
   def initialize(config={})
     validate_arguments config
 
-    @properties     =  config.clone
-    @topic          =  @properties.delete :topic
-    @include_topics =  @properties.delete :include_topics
-    @exclude_topics =  @properties.delete :exclude_topics
-    @num_streams    = (@properties.delete(:num_streams) || 1).to_java Java::int
-    @key_decoder    =  @properties.delete(:key_decoder) || 'kafka.serializer.DefaultDecoder'
-    @msg_decoder    =  @properties.delete(:msg_decoder) || 'kafka.serializer.DefaultDecoder'
+    @properties      =  config.clone
+    @topic           =  @properties.delete :topic
+    @include_topics  =  @properties.delete :include_topics
+    @exclude_topics  =  @properties.delete :exclude_topics
+    @num_streams     = (@properties.delete(:num_streams) || 1).to_java Java::int
+    @key_decoder     =  @properties.delete(:key_decoder) || 'kafka.serializer.DefaultDecoder'
+    @msg_decoder     =  @properties.delete(:msg_decoder) || 'kafka.serializer.DefaultDecoder'
+    @reset_beginning =  @properties.delete :reset_beginning
 
     @consumer = Java::KafkaConsumer::Consumer.createJavaConsumerConnector create_config
   end
@@ -50,6 +54,13 @@ class Kafka::Consumer
   # 
   # @note KafkaStreams instances are not thread-safe.
   def message_streams
+    begin
+      if @reset_beginning == 'from-beginning'
+        Java::kafka::utils::ZkUtils.maybeDeletePath(@zk_connect, "/consumers/#{@group_id}")
+      end
+    rescue ZkException => e
+      raise KafkaError.new(e), "Got ZkException: #{e}"
+    end
     key_decoder_i = Java::JavaClass.for_name(@key_decoder).
       constructor('kafka.utils.VerifiableProperties').new_instance nil
     msg_decoder_i = Java::JavaClass.for_name(@msg_decoder).
@@ -99,6 +110,12 @@ class Kafka::Consumer
 
     unless [ options[:topic], options[:include_topics], options[:exclude_topics] ].one?
       raise ArgumentError, "Exactly one of :topic, :include_topics, :exclude_topics is required."
+    end
+
+    if options[:reset_beginning]
+      unless options[:auto_offset_reset] && options[:auto_offset_reset] == 'smallest'
+        raise KafkaError.new('reset_beginning => from-beginning must be used with auto_offset_reset => smallest')
+      end
     end
   end
 
