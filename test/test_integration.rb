@@ -5,31 +5,20 @@ require 'util'
 class TestKafka < Test::Unit::TestCase
 
   def send_msg
-    options = {
-      :broker_list => 'localhost:9092',
-      :serializer_class => 'kafka.serializer.StringEncoder'
-    }
-    producer = Kafka::Producer.new(options)
+    producer = Kafka::Producer.new(PRODUCER_OPTIONS)
     producer.connect
     producer.send_msg('test',nil, 'test message')
   end
 
   def send_msg_deprecated
-    options = {
-      :broker_list => 'localhost:9092',
-      :serializer_class => 'kafka.serializer.StringEncoder'
-    }
-    producer = Kafka::Producer.new(options)
+    producer = Kafka::Producer.new(PRODUCER_OPTIONS)
     producer.connect
     producer.sendMsg('test',nil, 'test message')
   end
 
   def producer_compression_send(compression_codec='none')
-    options = {
-      :broker_list => 'localhost:9092',
-      :compression_codec => compression_codec,
-      :serializer_class => 'kafka.serializer.StringEncoder'
-    }
+    options = PRODUCER_OPTIONS.clone
+    options[:compression_codec] = compression_codec
     producer = Kafka::Producer.new(options)
     producer.connect
     producer.send_msg('test',nil, "codec #{compression_codec} test message")
@@ -57,13 +46,8 @@ class TestKafka < Test::Unit::TestCase
 
   def test_run
     queue = SizedQueue.new(20)
-    options = {
-      :zookeeper_connect => 'localhost:2181',
-      :group_id => 'test',
-      :topic => 'test'
-    }
     send_test_messages
-    consumer = Kafka::Consumer.new(options)
+    consumer = Kafka::Consumer.new(CLIENT_OPTIONS)
     streams = consumer.message_streams
     streams.each_with_index do |stream, thread_num|
       Thread.new { consumer_test stream, thread_num, queue}
@@ -84,7 +68,7 @@ class TestKafka < Test::Unit::TestCase
   def test_from_beginning
     queue = SizedQueue.new(20)
     options = {
-      :zookeeper_connect => 'localhost:2181',
+      :zookeeper_connect => '127.0.0.1:2181',
       :group_id => 'beginning',
       :topic => 'test',
       :reset_beginning => 'from-beginning',
@@ -109,11 +93,7 @@ class TestKafka < Test::Unit::TestCase
   end
 
   def produce_to_different_topics
-    options = {
-      :broker_list => 'localhost:9092',
-      :serializer_class => 'kafka.serializer.StringEncoder'
-    }
-    producer = Kafka::Producer.new(options)
+    producer = Kafka::Producer.new(PRODUCER_OPTIONS)
     producer.connect
     producer.send_msg('apple', nil,      'apple message')
     producer.send_msg('cabin', nil,      'cabin message')
@@ -123,7 +103,7 @@ class TestKafka < Test::Unit::TestCase
   def test_topic_whitelist
     queue = SizedQueue.new(20)
     options = {
-      :zookeeper_connect => 'localhost:2181',
+      :zookeeper_connect => '127.0.0.1:2181',
       :group_id => 'topics',
       :include_topics => 'ca.*',
     }
@@ -147,7 +127,7 @@ class TestKafka < Test::Unit::TestCase
   def test_topic_blacklist
     queue = SizedQueue.new(20)
     options = {
-      :zookeeper_connect => 'localhost:2181',
+      :zookeeper_connect => '127.0.0.1:2181',
       :group_id => 'topics',
       :exclude_topics => 'ca.*',
     }

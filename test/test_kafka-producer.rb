@@ -4,14 +4,8 @@ require 'jruby-kafka'
 require 'util'
 
 class TestKafka < Test::Unit::TestCase
-
   def send_msg
-    options = {
-      :bootstrap_servers => 'localhost:9092',
-      :key_serializer => 'org.apache.kafka.common.serialization.StringSerializer',
-      :value_serializer => 'org.apache.kafka.common.serialization.StringSerializer',
-    }
-    producer = Kafka::KafkaProducer.new(options)
+    producer = Kafka::KafkaProducer.new(KAFKA_PRODUCER_OPTIONS)
     producer.connect
     producer.send_msg('test',nil, nil, 'test message')
   end
@@ -33,12 +27,7 @@ class TestKafka < Test::Unit::TestCase
   end
 
   def send_msg_cb(&block)
-    options = {
-      :bootstrap_servers => 'localhost:9092',
-      :key_serializer => 'org.apache.kafka.common.serialization.StringSerializer',
-      :value_serializer => 'org.apache.kafka.common.serialization.StringSerializer',
-    }
-    producer = Kafka::KafkaProducer.new(options)
+    producer = Kafka::KafkaProducer.new(KAFKA_PRODUCER_OPTIONS)
     producer.connect
     producer.send_msg('test',nil, nil, 'test message', &block)
   end
@@ -62,12 +51,7 @@ class TestKafka < Test::Unit::TestCase
 
   def test_get_sent_msg
     queue = SizedQueue.new(20)
-    options = {
-        :zookeeper_connect => 'localhost:2181',
-        :group_id => 'test',
-        :topic => 'test'
-    }
-    consumer = Kafka::Consumer.new(options)
+    consumer = Kafka::Consumer.new(CLIENT_OPTIONS)
     send_msg
     streams = consumer.message_streams
     streams.each_with_index do |stream, thread_num|
