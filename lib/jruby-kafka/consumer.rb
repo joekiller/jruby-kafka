@@ -56,7 +56,7 @@ class Kafka::Consumer
   def message_streams
     begin
       if @reset_beginning == 'from-beginning'
-        Java::kafka::utils::ZkUtils.maybeDeletePath(@zk_connect, "/consumers/#{@group_id}")
+        Java::kafka::utils::ZkUtils.maybeDeletePath(@properties[:zookeeper_connect], "/consumers/#{@properties[:group_id]}")
       end
     rescue ZkException => e
       raise KafkaError.new(e), "Got ZkException: #{e}"
