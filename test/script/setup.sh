@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 ZK_TEST_HOST="${ZK_TEST_HOST:-127.0.0.1}"
 ZK_TEST_PORT="${ZT_TEST_PORT:-2181}"
 ZK_CHROOT="${ZK_CHROOT:-/}"
