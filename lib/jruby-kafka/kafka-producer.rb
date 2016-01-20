@@ -56,7 +56,7 @@ class Kafka::KafkaProducer
   def connect
     @producer = KAFKA_PRODUCER.new(create_producer_config)
     @send_method = producer.java_method :send, [ProducerRecord]
-    @send_cb_method = producer.java_method :send, [ProducerRecord, Callback]
+    @send_cb_method = producer.java_method :send, [ProducerRecord, Callback.java_class]
   end
 
   # throws FailedToSendMessageException or if not connected, StandardError.

@@ -2,18 +2,20 @@
 
 Prerequisites:
 
-`bundle install`
-
-Get jars and generate jruby-kafka_jars.rb:
-
-`rake setup jar`
+```
+git clean -fd
+export JARS_VENDOR=false
+bundle install
+rake clean
+```
 
 # Building
 
 Get jars for gem build:
 
-`rake setup jar package`
+```
+rake package
+```
 
-Build gem:
-
-`gem build jruby-kafka.gemspec`
+# Publishing
+`gem push pkg/jruby-kafka*.gem`

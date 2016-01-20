@@ -1,5 +1,7 @@
 # Jruby::Kafka
 
+[![Build Status](https://travis-ci.org/joekiller/jruby-kafka.svg?branch=master)](https://travis-ci.org/joekiller/jruby-kafka)
+
 ## Prerequisites
 
 * [Apache Kafka] version 0.8.2.2 installed and running.
