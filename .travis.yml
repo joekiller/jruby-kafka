@@ -9,7 +9,7 @@ rvm:
 before_install:
   - gem install jar-dependencies
   - bundle install
-  - rake compile
+  - rake install_jars
   - test/script/setup.sh
 after_script:
   - test/script/shutdown.sh

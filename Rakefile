@@ -14,8 +14,7 @@ desc "Run tests"
 task :default => :test
 
 
-require 'ruby-maven'
-desc "Pack jar after compiling classes"
-task :compile do
-  RubyMaven.exec('prepare-package')
+require 'jars/installer'
+task :install_jars do
+  Jars::Installer.vendor_jars!
 end

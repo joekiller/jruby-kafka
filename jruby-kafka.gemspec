@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.requirements << "jar 'org.apache.kafka:kafka_2.11', '0.9.0.0'"
   s.requirements << "jar 'org.slf4j:slf4j-log4j12', '1.7.13'"
 
-  s.add_runtime_dependency 'jar-dependencies', "~> #{File.read(path).match( /\s*JAR_DEPENDENCIES_VERSION\s*=\s*['"](.*)['"]/ )[1]}"
+  s.add_development_dependency 'jar-dependencies', "~> #{File.read(path).match( /\s*JAR_DEPENDENCIES_VERSION\s*=\s*['"](.*)['"]/ )[1]}"
   s.add_development_dependency 'rake', '~> 10.5'
   s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'ruby-maven', '~> 3.3'
