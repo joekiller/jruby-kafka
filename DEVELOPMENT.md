@@ -4,9 +4,8 @@ Prerequisites:
 
 ```
 git clean -fd
-export JARS_VENDOR=false
 bundle install
-rake clean
+rake install_jars
 ```
 
 # Building
@@ -14,6 +13,7 @@ rake clean
 Get jars for gem build:
 
 ```
+rake install_jars
 rake package
 ```
 

@@ -1,3 +1,10 @@
+#3.0 (February 05, 2016)
+##general
+- Make CI tests work. (#39)
+- Upgrade to Kafka 0.9.0.
+- Fix typos in README. (#41) Thank you @jeroenj.
+- Upgrade jar-dependencies to make jars setup only in development. (https://github.com/mkristian/jar-dependencies/issues/38)
+
 #2.0 (December 31, 2015)
 
 ##general

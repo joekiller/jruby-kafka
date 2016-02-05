@@ -7,7 +7,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.5)
-    jar-dependencies (0.3.1)
+    jar-dependencies (0.3.2)
     rake (10.5.0)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -30,7 +30,7 @@ PLATFORMS
   java
 
 DEPENDENCIES
-  jar-dependencies (~> 0.3.1)
+  jar-dependencies (~> 0.3.2)
   jruby-kafka!
   rake (~> 10.5)
   rspec (~> 3.4)
