@@ -1,3 +1,5 @@
+require 'jruby-kafka'
+
 PRODUCER_OPTIONS = {
     :broker_list => '127.0.0.1:9092',
     :serializer_class => 'kafka.serializer.StringEncoder'

@@ -1,3 +1,5 @@
+require 'jruby-kafka'
+
 KAFKA_PRODUCER_OPTIONS = {
     :bootstrap_servers => '127.0.0.1:9092',
     :key_serializer => 'org.apache.kafka.common.serialization.StringSerializer',
