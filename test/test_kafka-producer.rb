@@ -1,15 +1,10 @@
 require 'test/unit'
 require 'timeout'
 require 'jruby-kafka'
-require 'util'
+require 'util/kafka-producer'
+require 'util/consumer'
 
 class TestKafkaProducer < Test::Unit::TestCase
-  def send_kafka_producer_msg(topic = 'test')
-    producer = Kafka::KafkaProducer.new(KAFKA_PRODUCER_OPTIONS)
-    producer.connect
-    producer.send_msg(topic,nil, nil, 'test message')
-  end
-
   def test_01_send_message
     topic = 'test_send'
     future = send_kafka_producer_msg topic
@@ -25,12 +20,6 @@ class TestKafkaProducer < Test::Unit::TestCase
     assert(future.get().topic(), topic)
     assert_equal(future.get().partition(), 0)
 
-  end
-
-  def send_kafka_producer_msg_cb(&block)
-    producer = Kafka::KafkaProducer.new(KAFKA_PRODUCER_OPTIONS)
-    producer.connect
-    producer.send_msg('test',nil, nil, 'test message', &block)
   end
 
   def test_02_send_msg_with_cb
@@ -57,7 +46,7 @@ class TestKafkaProducer < Test::Unit::TestCase
     consumer = Kafka::Consumer.new(consumer_options({:topic => topic}))
     streams = consumer.message_streams
     streams.each_with_index do |stream|
-      Thread.new { consumer_test stream, queue}
+      Thread.new { consumer_test_blk stream, queue}
     end
     begin
       timeout(30) do
