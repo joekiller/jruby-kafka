@@ -4,7 +4,7 @@ require 'jruby-kafka'
 require 'util'
 
 class TestKafkaProducer < Test::Unit::TestCase
-  def send_msg(topic = 'test')
+  def send_kafka_producer_msg(topic = 'test')
     producer = Kafka::KafkaProducer.new(KAFKA_PRODUCER_OPTIONS)
     producer.connect
     producer.send_msg(topic,nil, nil, 'test message')
@@ -12,7 +12,7 @@ class TestKafkaProducer < Test::Unit::TestCase
 
   def test_01_send_message
     topic = 'test_send'
-    future = send_msg topic
+    future = send_kafka_producer_msg topic
     assert_not_nil(future)
     begin
       timeout(30) do
@@ -27,7 +27,7 @@ class TestKafkaProducer < Test::Unit::TestCase
 
   end
 
-  def send_msg_cb(&block)
+  def send_kafka_producer_msg_cb(&block)
     producer = Kafka::KafkaProducer.new(KAFKA_PRODUCER_OPTIONS)
     producer.connect
     producer.send_msg('test',nil, nil, 'test message', &block)
@@ -35,7 +35,7 @@ class TestKafkaProducer < Test::Unit::TestCase
 
   def test_02_send_msg_with_cb
     metadata = exception = nil
-    future = send_msg_cb { |md,e| metadata = md; exception = e }
+    future = send_kafka_producer_msg_cb { |md,e| metadata = md; exception = e }
     assert_not_nil(future)    
     begin
       timeout(30) do
@@ -52,7 +52,7 @@ class TestKafkaProducer < Test::Unit::TestCase
 
   def test_03_get_sent_msg
     topic = 'get_sent_msg'
-    send_msg topic
+    send_kafka_producer_msg topic
     queue = SizedQueue.new(20)
     consumer = Kafka::Consumer.new(consumer_options({:topic => topic}))
     streams = consumer.message_streams
