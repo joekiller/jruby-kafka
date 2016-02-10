@@ -11,10 +11,11 @@ class Kafka::Producer
   java_import 'kafka.message.NoCompressionCodec'
   java_import 'kafka.message.GZIPCompressionCodec'
   java_import 'kafka.message.SnappyCompressionCodec'
+  java_import 'kafka.message.LZ4CompressionCodec'
 
   VALIDATIONS = {
     :'request.required.acks' => %w[ 0 1 -1 ],
-    :'required.codecs' => [NoCompressionCodec.name, GZIPCompressionCodec.name, SnappyCompressionCodec.name],
+    :'required.codecs' => [NoCompressionCodec.name, GZIPCompressionCodec.name, SnappyCompressionCodec.name, LZ4CompressionCodec.name],
     :'producer.type' => %w[ sync async ]
   }
 

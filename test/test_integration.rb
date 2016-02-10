@@ -47,10 +47,15 @@ class TestKafka < Test::Unit::TestCase
     producer_compression_send('snappy')
   end
 
+  def send_compression_lz4
+    producer_compression_send('lz4')
+  end
+
   def send_test_messages
     send_compression_none
     send_compression_gzip
     send_compression_snappy
+    send_compression_lz4
     send_msg
   end
 
@@ -85,6 +90,7 @@ class TestKafka < Test::Unit::TestCase
       found << queue.pop.message.to_s
     end
     assert_equal([ "codec gzip test message",
+                   "codec lz4 test message",
                    "codec none test message",
                    "codec snappy test message",
                    "test message" ],
@@ -116,11 +122,13 @@ class TestKafka < Test::Unit::TestCase
       found << queue.pop.message.to_s
     end
     assert_equal([ "codec gzip test message",
+                   "codec lz4 test message",
                    "codec none test message",
                    "codec snappy test message",
                    "test message" ],
                  found.map(&:to_s).uniq.sort)
   end
+
 
   def produce_to_different_topics
     options = {

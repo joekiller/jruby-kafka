@@ -17,3 +17,7 @@ Get jars for gem build:
 Build gem:
 
 `gem build jruby-kafka.gemspec`
+
+# Testing
+
+`test/script/shutdown.sh;rm -rf {/tmp/zookeeper,/tmp/kafka-logs};test/script/setup.sh;rake`
