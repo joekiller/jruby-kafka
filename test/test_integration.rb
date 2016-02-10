@@ -1,10 +1,7 @@
 require 'test/unit'
+require 'jruby-kafka'
 
 class TestKafka < Test::Unit::TestCase
-  def setup
-    $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-    require 'jruby-kafka'
-  end
 
   def send_msg
     options = {
@@ -57,7 +54,8 @@ class TestKafka < Test::Unit::TestCase
     send_msg
   end
 
-  def test_run
+  def test_01_run
+    send_test_messages
     queue = SizedQueue.new(20)
     options = {
       :zk_connect => 'localhost:2181',
@@ -66,14 +64,21 @@ class TestKafka < Test::Unit::TestCase
       :zk_connect_timeout => '1000',
       :consumer_timeout_ms => '10',
       :consumer_restart_sleep_ms => '5000',
-      :consumer_restart_on_error => true
+      :consumer_restart_on_error => true,
+      :auto_offset_reset => 'smallest'
     }
     group = Kafka::Group.new(options)
     assert(!group.running?)
     group.run(1,queue)
-    send_test_messages
     assert(group.running?)
-    Java::JavaLang::Thread.sleep 5000
+    begin
+      timeout(30) do
+        until queue.length > 3 do
+          sleep 1
+          next
+        end
+      end
+    end
     group.shutdown
     found = []
     until queue.empty?
@@ -86,7 +91,7 @@ class TestKafka < Test::Unit::TestCase
                  found.map(&:to_s).uniq.sort,)
   end
 
-  def test_from_beginning
+  def test_02_from_beginning
     queue = SizedQueue.new(20)
     options = {
       :zk_connect => 'localhost:2181',
@@ -97,7 +102,14 @@ class TestKafka < Test::Unit::TestCase
     }
     group = Kafka::Group.new(options)
     group.run(1,queue)
-    Java::JavaLang::Thread.sleep 5000
+    begin
+      timeout(30) do
+        until queue.length > 3 do
+          sleep 1
+          next
+        end
+      end
+    end
     group.shutdown
     found = []
     until queue.empty?
@@ -122,17 +134,26 @@ class TestKafka < Test::Unit::TestCase
     producer.send_msg('carburetor', nil, 'carburetor message')
   end
 
-  def test_topic_whitelist
+  def test_03_topic_whitelist
+    produce_to_different_topics
     queue = SizedQueue.new(20)
     options = {
       :zk_connect => 'localhost:2181',
       :group_id => 'topics',
       :allow_topics => 'ca.*',
+      :auto_offset_reset => 'smallest'
     }
     group = Kafka::Group.new(options)
-    group.run(2,queue)
+    group.run(1,queue)
     produce_to_different_topics
-    Java::JavaLang::Thread.sleep 5000
+    begin
+      timeout(30) do
+        until queue.length > 1 do
+          sleep 1
+          next
+        end
+      end
+    end
     group.shutdown
     found = []
     until queue.empty?
@@ -143,17 +164,25 @@ class TestKafka < Test::Unit::TestCase
     assert(!found.include?("apple message"))
   end
 
-  def test_topic_blacklist
+  def test_04_topic_blacklist
+    produce_to_different_topics
     queue = SizedQueue.new(20)
     options = {
       :zk_connect => 'localhost:2181',
       :group_id => 'topics',
       :filter_topics => 'ca.*',
+      :auto_offset_reset => 'smallest'
     }
     group = Kafka::Group.new(options)
-    produce_to_different_topics
-    group.run(2,queue)
-    Java::JavaLang::Thread.sleep 5000
+    group.run(1,queue)
+    begin
+      timeout(30) do
+        until queue.length > 2 do
+          sleep 1
+          next
+        end
+      end
+    end
     group.shutdown
     found = []
     until queue.empty?

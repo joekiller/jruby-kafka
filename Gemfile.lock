@@ -1,15 +1,27 @@
 PATH
   remote: .
   specs:
-    jruby-kafka (1.5.0-java)
-      jar-dependencies (~> 0)
-      ruby-maven (~> 3.3)
+    jruby-kafka (1.6.pre.beta-java)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    jar-dependencies (0.3.1)
-    rake (10.4.2)
+    diff-lcs (1.2.5)
+    jar-dependencies (0.3.2)
+    rake (10.5.0)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
+    rspec-core (3.4.1)
+      rspec-support (~> 3.4.0)
+    rspec-expectations (3.4.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-mocks (3.4.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
     ruby-maven (3.3.8)
       ruby-maven-libs (~> 3.3.1)
     ruby-maven-libs (3.3.3)
@@ -18,8 +30,11 @@ PLATFORMS
   java
 
 DEPENDENCIES
+  jar-dependencies (~> 0.3.2)
   jruby-kafka!
-  rake (~> 10.4)
+  rake (~> 10.5)
+  rspec (~> 3.4)
+  ruby-maven (~> 3.3)
 
 BUNDLED WITH
    1.11.2

@@ -1,13 +1,10 @@
 require 'test/unit'
+require 'jruby-kafka'
 require 'timeout'
 
 class TestKafka < Test::Unit::TestCase
-  def setup
-    $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-    require 'jruby-kafka'
-  end
 
-  def send_msg
+  def send_msg(topic = 'test')
     options = {
       :bootstrap_servers => 'localhost:9092',
       :key_serializer => 'org.apache.kafka.common.serialization.StringSerializer',
@@ -15,14 +12,15 @@ class TestKafka < Test::Unit::TestCase
     }
     producer = Kafka::KafkaProducer.new(options)
     producer.connect
-    producer.send_msg('test',nil, nil, 'test message')
+    producer.send_msg(topic,nil, nil, 'test message')
   end
 
-  def test_send_message
-    future = send_msg
+  def test_01_send_message
+    topic = 'test_send'
+    future = send_msg topic
     assert_not_nil(future)
     begin
-      timeout(5) do
+      timeout(30) do
         until future.isDone() do
           next
         end
@@ -31,22 +29,32 @@ class TestKafka < Test::Unit::TestCase
     assert(future.isDone(), 'expected message to be done')
   end
 
-  def test_get_sent_msg
+  def test_02_get_sent_msg
+    topic = 'get_sent_msg'
+    send_msg topic
     queue = SizedQueue.new(20)
     options = {
-        :zk_connect => 'localhost:2181',
-        :group_id => 'test',
-        :topic_id => 'test'
+      :zk_connect => 'localhost:2181',
+      :group_id => 'test',
+      :topic_id => topic,
+      :auto_offset_reset => 'smallest'
     }
     group = Kafka::Group.new(options)
-    send_msg
     group.run(1,queue)
+    begin
+      timeout(30) do
+        until queue.length > 0 do
+          sleep 1
+          next
+        end
+      end
+    end
     group.shutdown
     found = []
     until queue.empty?
       found << queue.pop.message.to_s
     end
-    assert(!found.include?('test message'), 'expected to find message: test message')
+    assert(found.include?('test message'), 'expected to find message: test message')
   end
 
 end

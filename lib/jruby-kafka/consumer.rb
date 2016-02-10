@@ -1,5 +1,5 @@
 require 'java'
-require 'jruby-kafka/namespace'
+require 'jruby-kafka/version'
 
 # noinspection JRubyStringImportInspection
 class Kafka::Consumer

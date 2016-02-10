@@ -1,34 +1,20 @@
-require 'maven/ruby/tasks'
-require 'jar_installer'
-
-task :default
-
-desc 'setup jar dependencies to be used for "testing" and generates jruby-kafka_jars.rb'
-task :setup do
-  Jars::JarInstaller.install_jars
+require 'rubygems/package_task'
+Gem::PackageTask.new( eval File.read( 'jruby-kafka.gemspec' ) ) do
+  desc 'Pack gem'
+  task :package
 end
 
-task :jar do
-  Maven::Ruby::Maven.new.exec 'prepare-package'
+require 'rake/testtask'
+
+Rake::TestTask.new do |t|
+  t.libs = ['lib', 'test', 'test/util/*']
 end
 
-task :package do
-  system('gem build jruby-kafka.gemspec')
-end
-
-task :publish do
-  Rake::Task['clean'].execute
-  Rake::Task['package'].execute
-  system('gem push jruby-kafka*.gem')
-end
+desc "Run tests"
+task :default => :test
 
 
-task :install do
-  Rake::Task['package'].execute
-  system('gem install jruby-kafka*.gem')
-  Rake::Task['clean'].execute
-end
-
-task :clean do
-  system('rm jruby*.gem')
+require 'jars/installer'
+task :install_jars do
+  Jars::Installer.vendor_jars!
 end

@@ -1,5 +1,5 @@
 # basically we are porting this https://cwiki.apache.org/confluence/display/KAFKA/Consumer+Group+Example
-require 'jruby-kafka/namespace'
+require 'jruby-kafka/version'
 require 'jruby-kafka/consumer'
 require 'jruby-kafka/error'
 
