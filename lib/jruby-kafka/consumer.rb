@@ -1,5 +1,5 @@
 require 'java'
-require 'jruby-kafka/namespace'
+require 'jruby-kafka/version'
 
 class Kafka::Consumer
   java_import 'org.I0Itec.zkclient.exception.ZkException'

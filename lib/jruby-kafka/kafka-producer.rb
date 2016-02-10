@@ -1,4 +1,4 @@
-require 'jruby-kafka/namespace'
+require 'jruby-kafka/version'
 require 'jruby-kafka/error'
 
 # noinspection JRubyStringImportInspection
