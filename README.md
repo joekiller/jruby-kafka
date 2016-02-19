@@ -2,9 +2,13 @@
 
 [![Build Status](https://travis-ci.org/joekiller/jruby-kafka.svg?branch=master)](https://travis-ci.org/joekiller/jruby-kafka)
 
+Version 2.x => Kafka 0.8.2.2
+
+Version 3.x => Kafka 0.9.x
+
 ## Prerequisites
 
-* [Apache Kafka] version 0.8.2.2 installed and running.
+* [Apache Kafka] 0.8.2.2+ (see above).
 
 * [JRuby] installed.
 
@@ -13,7 +17,7 @@
 
 ## About
 
-This gem is primarily used to wrap most of the [Kafka 0.8.2.2 high level consumer] and [Kafka 0.8.2.2 producer] API into
+This gem is primarily used to wrap most of the [Kafka high level consumer] and [Kafka producer] API into
 jruby.
 The [Kafka Consumer Group Example] is pretty much ported to this library.
 
@@ -22,7 +26,8 @@ The [Kafka Consumer Group Example] is pretty much ported to this library.
   - [Kafka 0.8.2.x scala producer](http://kafka.apache.org/082/documentation.html#producerapi)
   - [Kafka Consumer Group Example](https://cwiki.apache.org/confluence/display/KAFKA/Consumer+Group+Example)
   
-Note that the Scala `Kafka::Producer` will deprecate and Java `Kafka::KafkaProducer` is taking over. 
+Note that the Scala `Kafka::Producer` will deprecate and Java `Kafka::KafkaProducer` is taking over.
+(The 0.8.2.x and 0.9x consumer/producer APIs are similar)
 
 ## Installation
 
@@ -39,7 +44,7 @@ You can run the following to install the resulting package:
 
 Add this line to your application's Gemfile:
 
-    gem 'jruby-kafka'
+    gem 'jruby-kafka', "~> #{your_version_here}" # '~> 2.0.0' for 0.8.2.2 brokers, '~> 3.0.0' for 0.9 brokers
 
 ## Usage
 
