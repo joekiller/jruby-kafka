@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test}/*`.split("\n")
 
   #Jar dependencies
-  s.requirements << "jar 'org.apache.kafka:kafka_2.11', '0.9.0.0'"
+  s.requirements << "jar 'org.apache.kafka:kafka_2.11', '0.8.2.2'"
   s.requirements << "jar 'org.slf4j:slf4j-log4j12', '1.7.13'"
 
   s.add_development_dependency 'jar-dependencies', "~> #{File.read(path).match( /\s*JAR_DEPENDENCIES_VERSION\s*=\s*['"](.*)['"]/ )[1]}"

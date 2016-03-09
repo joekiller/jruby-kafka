@@ -1,3 +1,7 @@
+#2.1 (March 09, 2016)
+##general
+- Update to Kafka 0.8.2.2.
+- CI for v2.X
 #3.0 (February 05, 2016)
 ##general
 - Make CI tests work. (#39)
