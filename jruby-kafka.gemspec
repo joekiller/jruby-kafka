@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.version       = File.read(path).match( /\s*VERSION\s*=\s*['"](.*)['"]/ )[1]
   s.authors       = ['Joseph Lawson']
   s.email         = ['joe@joekiller.com']
-  s.description   = 'this is primarily to be used as an interface for logstash'
+  s.description   = 'A ready to go interface to Kafka for JRuby.'
   s.summary       = 'jruby Kafka wrapper'
   s.homepage      = 'https://github.com/joekiller/jruby-kafka'
   s.license       = 'Apache 2.0'

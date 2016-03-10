@@ -1,4 +1,4 @@
 module Kafka
-  VERSION = '3.1'.freeze
+  VERSION = '3.2-beta'.freeze
   JAR_DEPENDENCIES_VERSION = '0.3.2'.freeze
 end
