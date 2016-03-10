@@ -2,22 +2,20 @@
 
 Prerequisites:
 
-`bundle install`
-
-Get jars and generate jruby-kafka_jars.rb:
-
-`rake setup jar`
+```
+git clean -fd
+bundle install
+rake install_jars
+```
 
 # Building
 
 Get jars for gem build:
 
-`rake setup jar package`
+```
+rake install_jars
+rake package
+```
 
-Build gem:
-
-`gem build jruby-kafka.gemspec`
-
-# Testing
-
-`test/script/shutdown.sh;rm -rf {/tmp/zookeeper,/tmp/kafka-logs};test/script/setup.sh;rake`
+# Publishing
+`gem push pkg/jruby-kafka*.gem`

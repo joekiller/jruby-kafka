@@ -4,11 +4,8 @@
 
 ## Prerequisites
 
-* [Apache Kafka] version 0.8.2.2 installed and running.
+* [JRuby] 1.7.19+ installed.
 
-* [JRuby] installed.
-
-[Apache Kafka]: http://kafka.apache.org/
 [JRuby]: http://jruby.org/
 
 ## About
@@ -71,12 +68,6 @@ then a consumer
     end
 
     group.shutdown()
-
-
-
-#### Using in logstash:
-
-Check out this repo: https://github.com/joekiller/logstash-kafka
 
 ## Contributing
 

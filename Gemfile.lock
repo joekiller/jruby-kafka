@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jruby-kafka (1.6.pre.beta-java)
+    jruby-kafka (1.7.pre.beta-java)
 
 GEM
   remote: https://rubygems.org/
