@@ -51,7 +51,7 @@ e_e () {
 }
 
 if [ ! -f "kafka.tgz" ]; then
-    curl -s -o kafka.tgz $(curl -s https://www.apache.org/dyn/closer.cgi?path=/kafka/0.9.0.0/kafka_2.11-0.9.0.0.tgz | grep -o '<strong>[^<]*</strong>'|sed 's/<[^>]*>//g'|head -1)
+    curl -s -o kafka.tgz $(curl -s https://www.apache.org/dyn/closer.cgi?path=/kafka/0.9.0.1/kafka_2.11-0.9.0.1.tgz | grep -o '<strong>[^<]*</strong>'|sed 's/<[^>]*>//g'|head -1)
 fi
 
 if [ ! -d "kafka" ]; then
