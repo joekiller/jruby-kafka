@@ -1,4 +1,7 @@
 #CHANGELOG.md
+##3.5 (March 16, 2016)
+###general
+- use concurrent-ruby < 2.0
 ##3.4 (March 16, 2016)
 ###KafkaConsumer
 - KafkaConsumer class extends org.apache.kafka.clients.consumer.KafkaConsumer
