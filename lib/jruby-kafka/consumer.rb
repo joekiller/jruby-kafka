@@ -1,8 +1,14 @@
 require 'java'
 require 'jruby-kafka/namespace'
+require 'jruby-kafka/utility'
 
 class Kafka::Consumer
   java_import 'org.I0Itec.zkclient.exception.ZkException'
+  java_import 'kafka.consumer.ConsumerConfig'
+  java_import 'kafka.consumer.Consumer'
+  java_import 'kafka.consumer.Whitelist'
+  java_import 'kafka.consumer.Blacklist'
+  java_import 'kafka.utils.ZkUtils'
   # Create a Kafka high-level consumer.
   #
   # @param [Hash] config the consumer configuration.
@@ -41,7 +47,7 @@ class Kafka::Consumer
     @msg_decoder     =  @properties.delete(:msg_decoder) || 'kafka.serializer.DefaultDecoder'
     @reset_beginning =  @properties.delete :reset_beginning
 
-    @consumer = Java::KafkaConsumer::Consumer.createJavaConsumerConnector create_config
+    @consumer = Consumer.createJavaConsumerConnector ConsumerConfig.new Kafka::Utility.java_properties @properties
   end
 
   # Start fetching messages.
@@ -56,7 +62,7 @@ class Kafka::Consumer
   def message_streams
     begin
       if @reset_beginning == 'from-beginning'
-        Java::kafka::utils::ZkUtils.maybeDeletePath(@properties[:zookeeper_connect], "/consumers/#{@properties[:group_id]}")
+        ZkUtils.maybeDeletePath(@properties[:zookeeper_connect], "/consumers/#{@properties[:group_id]}")
       end
     rescue ZkException => e
       raise KafkaError.new(e), "Got ZkException: #{e}"
@@ -74,8 +80,8 @@ class Kafka::Consumer
 
     else
       filter =  @include_topics ? 
-        Java::KafkaConsumer::Whitelist.new(@include_topics) : 
-        Java::KafkaConsumer::Blacklist.new(@exclude_topics)
+        Whitelist.new(@include_topics) :
+        Blacklist.new(@exclude_topics)
 
       @consumer.
         createMessageStreamsByFilter(filter, @num_streams, key_decoder_i, msg_decoder_i).
@@ -117,16 +123,6 @@ class Kafka::Consumer
         raise KafkaError.new('reset_beginning => from-beginning must be used with auto_offset_reset => smallest')
       end
     end
-  end
-
-  def create_config
-    properties = java.util.Properties.new
-    @properties.each do |k,v|
-      k = k.to_s.gsub '_', '.'
-      v = v.to_s 
-      properties.setProperty k, v
-    end
-    Java::KafkaConsumer::ConsumerConfig.new properties
   end
 end
 

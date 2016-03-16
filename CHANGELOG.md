@@ -1,3 +1,7 @@
+#3.3 (March 16, 2016)
+##general
+- Cleaned up validation and initialization of all classes to be DRYer and allow passing of more options without code modifications.
+ 
 #3.2 (March 15, 2016)
 ##consumer
 - Added new experimental KafkaConsumer (#43)

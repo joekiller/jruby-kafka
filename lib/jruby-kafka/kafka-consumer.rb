@@ -1,8 +1,14 @@
 require 'java'
 require 'jruby-kafka/namespace'
-require "concurrent"
+require 'concurrent'
+require 'jruby-kafka/utility'
 
 class Kafka::KafkaConsumer
+
+  REQUIRED = [
+    :bootstrap_servers, :key_deserializer, :value_deserializer
+  ]
+
   KAFKA_CONSUMER = Java::org.apache.kafka.clients.consumer.KafkaConsumer
   # Create a Kafka high-level consumer.
   #
@@ -19,11 +25,11 @@ class Kafka::KafkaConsumer
   # https://kafka.apache.org/090/javadoc/org/apache/kafka/clients/consumer/ConsumerConfig.html.
   #
   def initialize(config={})
-    validate_arguments config
+    Kafka::Utility.validate_arguments REQUIRED, config
     @properties      =  config.clone
     @topics          =  @properties.delete :topics
     @stop_called     =  Concurrent::AtomicBoolean.new(false)
-    @consumer        =  KAFKA_CONSUMER.new(create_config)
+    @consumer        =  KAFKA_CONSUMER.new(Kafka::Utility.java_properties @properties)
     @subscribed      =  false
     subscribe
   end
@@ -54,24 +60,6 @@ class Kafka::KafkaConsumer
 
   def close
     @consumer.close
-  end
-
-  private
-
-  def validate_arguments(options)
-    [:bootstrap_servers, :key_deserializer, :value_deserializer].each do |opt|
-      raise ArgumentError, "Parameter :#{opt} is required." unless options[opt]
-    end
-  end
-
-  def create_config
-    properties = java.util.Properties.new
-    @properties.each do |k,v|
-      k = k.to_s.gsub '_', '.'
-      v = v.to_s 
-      properties.setProperty k, v
-    end
-    properties
   end
 end
 
