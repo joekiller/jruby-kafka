@@ -1,11 +1,13 @@
 PATH
   remote: .
   specs:
-    jruby-kafka (3.1-java)
+    jruby-kafka (3.2.pre.beta-java)
+      concurrent-ruby (= 1.0.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    concurrent-ruby (1.0.0-java)
     diff-lcs (1.2.5)
     jar-dependencies (0.3.2)
     rake (10.5.0)

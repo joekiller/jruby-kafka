@@ -1,6 +1,10 @@
+#3.2 (March 15, 2016)
+##consumer
+- Added new experimental KafkaConsumer (#43)
 #3.1 (March 10, 2016)
 ##general
 - Upgrade to Kafka 0.9.0.1.
+
 #3.0 (February 05, 2016)
 ##general
 - Make CI tests work. (#39)
