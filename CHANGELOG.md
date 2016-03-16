@@ -1,6 +1,7 @@
 #3.2 (March 15, 2016)
 ##consumer
 - Added new experimental KafkaConsumer (#43)
+
 #3.1 (March 10, 2016)
 ##general
 - Upgrade to Kafka 0.9.0.1.
@@ -26,7 +27,6 @@
 - Fixed callback block variable throwing error when not defined. (#37) Thank you @ashangit.
 
 #1.5.0 (December 31, 2015)
-
 ##general
 - Updated to support Kafka 0.8.2.2. (#37) Thank you @ashangit.
 - Fixed typos in README. (#35) Thank you @Ben-M.
