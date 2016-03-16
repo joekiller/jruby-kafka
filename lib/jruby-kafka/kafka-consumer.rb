@@ -3,13 +3,12 @@ require 'jruby-kafka/namespace'
 require 'concurrent'
 require 'jruby-kafka/utility'
 
-class Kafka::KafkaConsumer
+class Kafka::KafkaConsumer < Java::org.apache.kafka.clients.consumer.KafkaConsumer
 
   REQUIRED = [
     :bootstrap_servers, :key_deserializer, :value_deserializer
   ]
 
-  KAFKA_CONSUMER = Java::org.apache.kafka.clients.consumer.KafkaConsumer
   # Create a Kafka high-level consumer.
   #
   # @param [Hash] config the consumer configuration.
@@ -27,39 +26,19 @@ class Kafka::KafkaConsumer
   def initialize(config={})
     Kafka::Utility.validate_arguments REQUIRED, config
     @properties      =  config.clone
-    @topics          =  @properties.delete :topics
     @stop_called     =  Concurrent::AtomicBoolean.new(false)
-    @consumer        =  KAFKA_CONSUMER.new(Kafka::Utility.java_properties @properties)
-    @subscribed      =  false
-    subscribe
+    super Kafka::Utility.java_properties @properties
   end
 
-  attr_reader :properties, :topics
+  attr_reader :properties
 
   def stop
     @stop_called.make_true
-    @consumer.wakeup
-  end
-
-  # Subscribe to topics
-  def subscribe
-    @consumer.subscribe(@topics)
-    @subscribed = true
-    nil
+    self.wakeup
   end
 
   # stop? should never be overriden
   def stop?
     @stop_called.value
   end
-
-  # Fetch data for the topics or partitions specified using one of the subscribe/assign APIs.
-  def poll(timeout)
-    @consumer.poll timeout
-  end
-
-  def close
-    @consumer.close
-  end
 end
-

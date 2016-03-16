@@ -1,4 +1,8 @@
 #CHANGELOG.md
+##3.4 (March 16, 2016)
+###KafkaConsumer
+- KafkaConsumer class extends org.apache.kafka.clients.consumer.KafkaConsumer
+  - KafkaConsumer stop and stop? methods provide a thread safe interface to signal that a KafkaConsumer should stop. 
 
 ##3.3 (March 16, 2016)
 ###general
