@@ -1,8 +1,17 @@
 Gem::Specification.new do |s|
+  def git_version
+    describe = `git describe --dirty`.strip
+    describe_long  = `git describe --long --dirty`.strip
+    if describe == describe_long
+      version = describe.insert(describe.index(/-[0-9]*-/), '.ci')
+    else
+      version = describe
+    end
+    version[1..-1].tr('-', '.')
+  end
 
   s.name          = 'jruby-kafka'
-  path            = File.expand_path('lib/jruby-kafka/version.rb', File.dirname(__FILE__))
-  s.version       = File.read(path).match( /\s*VERSION\s*=\s*['"](.*)['"]/ )[1]
+  s.version       = git_version
   s.authors       = ['Joseph Lawson']
   s.email         = ['joe@joekiller.com']
   s.description   = 'A ready to go interface to Kafka for JRuby.'
@@ -21,7 +30,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'concurrent-ruby', '< 2.0'
 
-  s.add_development_dependency 'jar-dependencies', "~> #{File.read(path).match( /\s*JAR_DEPENDENCIES_VERSION\s*=\s*['"](.*)['"]/ )[1]}"
+  s.add_development_dependency 'jar-dependencies', '~> 0.3.2'
   s.add_development_dependency 'rake', '~> 10.5'
   s.add_development_dependency 'rspec', '~> 3.4'
   s.add_development_dependency 'ruby-maven', '~> 3.3'

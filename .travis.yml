@@ -1,15 +1,23 @@
 sudo: false
 language: ruby
 cache:
-  - bundler
-  - directories:
-    - $HOME/.m2
+- bundler
+- directories:
+  - $HOME/.m2
 rvm:
-  - jruby-19mode
+- jruby-19mode
 before_install:
-  - gem install jar-dependencies
-  - bundle install
-  - rake install_jars
-  - test/script/setup.sh
+- gem install jar-dependencies
+- bundle install
+- rake install_jars
+- test/script/setup.sh
 after_script:
-  - test/script/shutdown.sh
+- test/script/shutdown.sh
+deploy:
+  provider: rubygems
+  api_key:
+    secure: TQjEZN52AvDplp3NwHpB6T8SQe4z4gPk6uviyu/5/dP7uM425JolD54+ByxxSjiVxGsWP0X+UIVCw00FJ6rTvuihhVFXnx6LnhlcexO6i+3vM3yAMuWb2PckIwgqV01f7YH0WOslSvMYSGI5AQ9nWJ5KZJmBj7B+JmRianNXuC8=
+  gem: jruby-kafka
+  on:
+    tags: true
+    repo: joekiller/jruby-kafka
