@@ -1,4 +1,8 @@
-# 2.2.0 (March, 22, 2016)
+# 2.2.2 (March 22, 2016)
+### general
+- fixed auto-deploy on tagged build
+
+## 2.2.0 (March 22, 2016)
 ###consumer
 - backport v3.6.0 Consumer changes.
 
