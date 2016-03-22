@@ -15,6 +15,7 @@ after_script:
 - test/script/shutdown.sh
 deploy:
   provider: rubygems
+  skip_cleanup: true
   api_key:
     secure: TQjEZN52AvDplp3NwHpB6T8SQe4z4gPk6uviyu/5/dP7uM425JolD54+ByxxSjiVxGsWP0X+UIVCw00FJ6rTvuihhVFXnx6LnhlcexO6i+3vM3yAMuWb2PckIwgqV01f7YH0WOslSvMYSGI5AQ9nWJ5KZJmBj7B+JmRianNXuC8=
   gem: jruby-kafka
