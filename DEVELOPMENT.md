@@ -14,8 +14,8 @@ Get jars for gem build:
 
 ```
 rake install_jars
-rake package
+gem build jruby-kafka.gemspec
 ```
 
 # Publishing
-`gem push pkg/jruby-kafka*.gem`
+`gem push jruby-kafka*.gem`

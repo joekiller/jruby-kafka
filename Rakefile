@@ -1,9 +1,3 @@
-require 'rubygems/package_task'
-Gem::PackageTask.new( eval File.read( 'jruby-kafka.gemspec' ) ) do
-  desc 'Pack gem'
-  task :package
-end
-
 require 'rake/testtask'
 
 Rake::TestTask.new do |t|
