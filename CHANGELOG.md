@@ -1,5 +1,8 @@
+# 2.2.0 (March, 22, 2016)
+###consumer
+- backport v3.6.0 Consumer changes.
 
-# 3.6.0 (March 22, 2016)
+## 3.6.0 (March 22, 2016)
 ###consumer
 - implement connect method on Consumer. Useful for mock hooks.
 
