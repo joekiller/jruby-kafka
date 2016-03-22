@@ -1,11 +1,15 @@
-#CHANGELOG.md
+# 3.6.0 (March 22, 2016)
+###consumer
+- implement connect method on Consumer. Useful for mock hooks.
+
 ##3.5 (March 16, 2016)
 ###general
 - use concurrent-ruby < 2.0
+
 ##3.4 (March 16, 2016)
 ###KafkaConsumer
 - KafkaConsumer class extends org.apache.kafka.clients.consumer.KafkaConsumer
-  - KafkaConsumer stop and stop? methods provide a thread safe interface to signal that a KafkaConsumer should stop. 
+- KafkaConsumer stop and stop? methods provide a thread safe interface to signal that a KafkaConsumer should stop. 
 
 ##3.3 (March 16, 2016)
 ###general

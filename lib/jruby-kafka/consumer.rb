@@ -49,6 +49,13 @@ class Kafka::Consumer
     @consumer        =  nil
   end
 
+  # Create connection to Kafka and Zookeeper.
+  #
+  # @return void
+  def connect
+    @consumer = Consumer.createJavaConsumerConnector ConsumerConfig.new Kafka::Utility.java_properties @properties
+  end
+
   # Start fetching messages.
   #
   # @return [Array<Java::KafkaConsumer::KafkaStream>] list of stream, as specified by the 
@@ -59,8 +66,7 @@ class Kafka::Consumer
   # 
   # @note KafkaStreams instances are not thread-safe.
   def message_streams
-    shutdown
-    @consumer = Consumer.createJavaConsumerConnector ConsumerConfig.new Kafka::Utility.java_properties @properties
+    connect if @consumer.nil?
     begin
       if @reset_beginning == 'from-beginning'
         ZkUtils.maybeDeletePath(@properties[:zookeeper_connect], "/consumers/#{@properties[:group_id]}")
@@ -105,11 +111,11 @@ class Kafka::Consumer
   # @return void
   def shutdown
     @consumer.shutdown if @consumer
+    @consumer = nil
     nil
   end
   
   private
-
   def validate_arguments(options)
     [:zookeeper_connect, :group_id].each do |opt|
       raise ArgumentError, "Parameter :#{opt} is required." unless options[opt]
@@ -126,4 +132,3 @@ class Kafka::Consumer
     end
   end
 end
-
