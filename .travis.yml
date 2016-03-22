@@ -20,5 +20,4 @@ deploy:
   gem: jruby-kafka
   on:
     tags: true
-    all_branches: true
     repo: joekiller/jruby-kafka
