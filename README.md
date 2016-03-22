@@ -4,12 +4,13 @@
 
 Version 2.x => Kafka 0.8.2.2
 
-Version 3.x => Kafka 0.9.x
+Version 3.x => Kafka 0.9.0.1
 
 ## Prerequisites
 
-* [JRuby] v1.7.19+ installed.
+* [JRuby] 1.7.19+ installed.
 
+[Apache Kafka]: http://kafka.apache.org/
 [JRuby]: http://jruby.org/
 
 ## About
@@ -94,10 +95,6 @@ sleep 10
 consumer.shutdown
 ```
 
-#### Using in logstash:
-
-Check out this repo: https://github.com/joekiller/logstash-kafka
-
 ## Contributing
 
 1. Fork it
@@ -105,4 +102,3 @@ Check out this repo: https://github.com/joekiller/logstash-kafka
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-

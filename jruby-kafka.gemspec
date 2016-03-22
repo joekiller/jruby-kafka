@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.version       = File.read(path).match( /\s*VERSION\s*=\s*['"](.*)['"]/ )[1]
   s.authors       = ['Joseph Lawson']
   s.email         = ['joe@joekiller.com']
-  s.description   = 'this is primarily to be used as an interface for logstash'
+  s.description   = 'A ready to go interface to Kafka for JRuby.'
   s.summary       = 'jruby Kafka wrapper'
   s.homepage      = 'https://github.com/joekiller/jruby-kafka'
   s.license       = 'Apache 2.0'
@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
   #Jar dependencies
   s.requirements << "jar 'org.apache.kafka:kafka_2.11', '0.8.2.2'"
   s.requirements << "jar 'org.slf4j:slf4j-log4j12', '1.7.13'"
+
+  s.add_runtime_dependency 'concurrent-ruby', '< 2.0'
 
   s.add_development_dependency 'jar-dependencies', "~> #{File.read(path).match( /\s*JAR_DEPENDENCIES_VERSION\s*=\s*['"](.*)['"]/ )[1]}"
   s.add_development_dependency 'rake', '~> 10.5'
