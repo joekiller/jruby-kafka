@@ -46,8 +46,7 @@ class Kafka::Consumer
     @key_decoder     =  @properties.delete(:key_decoder) || 'kafka.serializer.DefaultDecoder'
     @msg_decoder     =  @properties.delete(:msg_decoder) || 'kafka.serializer.DefaultDecoder'
     @reset_beginning =  @properties.delete :reset_beginning
-
-    @consumer = Consumer.createJavaConsumerConnector ConsumerConfig.new Kafka::Utility.java_properties @properties
+    @consumer        =  nil
   end
 
   # Start fetching messages.
@@ -60,6 +59,8 @@ class Kafka::Consumer
   # 
   # @note KafkaStreams instances are not thread-safe.
   def message_streams
+    shutdown
+    @consumer = Consumer.createJavaConsumerConnector ConsumerConfig.new Kafka::Utility.java_properties @properties
     begin
       if @reset_beginning == 'from-beginning'
         ZkUtils.maybeDeletePath(@properties[:zookeeper_connect], "/consumers/#{@properties[:group_id]}")
