@@ -1,4 +1,4 @@
-def jruby_kafka_version
+jruby_kafka_version = begin
   describe = `git describe --dirty`.strip
   describe_long  = `git describe --long --dirty`.strip
   if describe == describe_long
