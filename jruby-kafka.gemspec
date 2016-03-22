@@ -1,17 +1,17 @@
-Gem::Specification.new do |s|
-  def git_version
-    describe = `git describe --dirty`.strip
-    describe_long  = `git describe --long --dirty`.strip
-    if describe == describe_long
-      version = describe.insert(describe.index(/-[0-9]*-/), '.ci')
-    else
-      version = describe
-    end
-    version[1..-1].tr('-', '.')
+def jruby_kafka_version
+  describe = `git describe --dirty`.strip
+  describe_long  = `git describe --long --dirty`.strip
+  if describe == describe_long
+    version = describe.insert(describe.index(/-[0-9]*-/), '.ci')
+  else
+    version = describe
   end
+  version[1..-1].tr('-', '.')
+end
 
+Gem::Specification.new do |s|
   s.name          = 'jruby-kafka'
-  s.version       = git_version
+  s.version       = jruby_kafka_version
   s.authors       = ['Joseph Lawson']
   s.email         = ['joe@joekiller.com']
   s.description   = 'A ready to go interface to Kafka for JRuby.'
