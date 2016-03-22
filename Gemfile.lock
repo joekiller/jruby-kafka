@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jruby-kafka (3.6.0.pre-java)
+    jruby-kafka (2.2.0.pre-java)
       concurrent-ruby (< 2.0)
 
 GEM

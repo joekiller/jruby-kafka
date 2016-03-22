@@ -1,3 +1,4 @@
+
 # 3.6.0 (March 22, 2016)
 ###consumer
 - implement connect method on Consumer. Useful for mock hooks.
