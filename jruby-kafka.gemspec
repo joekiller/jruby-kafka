@@ -24,8 +24,8 @@ Gem::Specification.new do |s|
   s.files = Dir[ 'lib/**/*.rb', 'lib/**/*.jar', 'lib/**/*.xml' ]
   s.test_files    = `git ls-files -- {test}/*`.split("\n")
 
-  #Jar dependencies
-  s.requirements << "jar 'org.apache.kafka:kafka_2.11', '0.9.0.1'"
+  # Jar dependencies
+  s.requirements << "jar 'org.apache.kafka:kafka_2.11', '0.10.0.0'"
   s.requirements << "jar 'org.slf4j:slf4j-log4j12', '1.7.13'"
 
   s.add_runtime_dependency 'concurrent-ruby', '< 2.0'
