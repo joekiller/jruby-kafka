@@ -6,6 +6,8 @@ Version 2.x => Kafka 0.8.2.2
 
 Version 3.x => Kafka 0.9.0.1
 
+Version 4.x => Kafka 0.10.0.0
+
 ## Prerequisites
 
 * [JRuby] 1.7.19+ installed.
