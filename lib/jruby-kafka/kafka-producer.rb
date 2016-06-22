@@ -40,12 +40,24 @@ class Kafka::KafkaProducer <  Java::org.apache.kafka.clients.producer.KafkaProdu
   java_alias :send_method   , :send, [ProducerRecord]
   java_alias :send_cb_method, :send, [ProducerRecord, Callback.java_class]
 
-  # throws FailedToSendMessageException or if not connected, StandardError.
-  def send_msg(topic, partition, key, value, &block)
+  # Send a message to the cluster.
+  #
+  # @param [String]      topic      The topic to send the message to.
+  # @param [Integer,nil] partition  The topic partition to send the message to, or nil to allow
+  #                                 the configured partitioner class to select the partition.
+  # @param [String,nil]  key        The message key, if there is one.  Otherwise, nil.
+  # @param [String]      value      The message value.
+  # @param [Integer,nil] timestamp  The message timestamp in milliseconds. If nil, the 
+  #                                 producer will assign it the current time.
+  #   
+  # @raise [FailedToSendMessageException] if it can't send the message
+  def send_msg(topic, partition, key, value, timestamp=nil, &block)
+    record = ProducerRecord.new(topic, partition, timestamp, key, value)
+
     if block
-      send_cb_method ProducerRecord.new(topic, partition, key, value), RubyCallback.new(block)
+      send_cb_method record, RubyCallback.new(block)
     else
-      send_method ProducerRecord.new(topic, partition, key, value)
+      send_method record
     end
   end
 end
