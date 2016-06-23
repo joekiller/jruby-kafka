@@ -81,7 +81,7 @@ class TestKafkaProducer < Test::Unit::TestCase
 
   def test_05_send_msg_with_ts_and_cb
     metadata = exception = nil
-    future = send_kafka_producer_msg_ts_cb('test', (Time.now.to_i * 1000)) { |md,e| metadata = md; exception = e }
+    future = send_kafka_producer_msg_ts_cb(Time.now.to_i * 1000) { |md,e| metadata = md; exception = e }
     assert_not_nil(future)    
     begin
       timeout(30) do
