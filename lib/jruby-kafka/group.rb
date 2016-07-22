@@ -17,10 +17,10 @@ class Kafka::Group
   # :zk_connect_timeout => "6000" - (optional) The max time that the client waits while establishing a connection to zookeeper.
   # :group_id => "group" - REQUIRED: The group id to consume on.
   # :topic_id => "topic" - REQUIRED: The topic id to consume on.
-  # :reset_beginning => "from-beginning" - (optional) reset the consumer group to start at the 
+  # :reset_beginning => "from-beginning" - (optional) reset the consumer group to start at the
   #   earliest message present in the log by clearing any offsets for the group stored in Zookeeper.
-  # :auto_offset_reset => "smallest" or "largest" - (optional, default 'largest') If the consumer does not already 
-  #   have an established offset to consume from, start with the earliest message present in the log (smallest) or 
+  # :auto_offset_reset => "smallest" or "largest" - (optional, default 'largest') If the consumer does not already
+  #   have an established offset to consume from, start with the earliest message present in the log (smallest) or
   #   after the last message in the log (largest).
   # :consumer_restart_on_error => "true" - (optional) Controls if consumer threads are to restart on caught exceptions.
   #   exceptions are logged.
@@ -55,6 +55,8 @@ class Kafka::Group
     @consumer_id = nil
     @key_decoder_class = "kafka.serializer.DefaultDecoder"
     @value_decoder_class = "kafka.serializer.DefaultDecoder"
+    @dual_commit_enabled = "#{true}"
+    @offsets_storage = "zookeeper"
 
     if options[:zk_connect_timeout]
       @zk_connect_timeout = "#{options[:zk_connect_timeout]}"
@@ -142,6 +144,13 @@ class Kafka::Group
 
     if options[:consumer_id]
       @consumer_id = options[:consumer_id]
+    end
+
+    if options[:dual_commit_enabled]
+      @dual_commit_enabled = "#{options[:dual_commit_enabled]}"
+    end
+    if options[:offsets_storage]
+      @offsets_storage = "#{options[:offsets_storage]}"
     end
   end
 
@@ -238,6 +247,8 @@ class Kafka::Group
     properties.put('fetch.wait.max.ms', @fetch_wait_max_ms)
     properties.put('refresh.leader.backoff.ms', @refresh_leader_backoff_ms)
     properties.put('consumer.timeout.ms', @consumer_timeout_ms)
+    properties.put('dual.commit.enabled', @dual_commit_enabled)
+    properties.put('offsets.storage', @offsets_storage)
     unless @consumer_id.nil?
       properties.put('consumer.id', @consumer_id)
     end

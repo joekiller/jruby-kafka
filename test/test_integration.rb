@@ -201,4 +201,31 @@ class TestKafka < Test::Unit::TestCase
     assert(found.include?("apple message"))
   end
 
+  def test_consume_dual_commit
+    queue = SizedQueue.new(20)
+    options = {
+      :zk_connect => 'localhost:2181',
+      :group_id => 'test',
+      :topic_id => 'test',
+      :offsets_storage => 'kafka',
+      :dual_commit_enabled => true,
+    }
+    group = Kafka::Group.new(options)
+    assert(!group.running?)
+    group.run(1,queue)
+    send_test_messages
+    assert(group.running?)
+    Java::JavaLang::Thread.sleep 5000
+    group.shutdown
+    found = []
+    until queue.empty?
+      found << queue.pop.message.to_s
+    end
+    assert_equal([ "codec gzip test message",
+                   "codec lz4 test message",
+                   "codec none test message",
+                   "codec snappy test message",
+                   "test message" ],
+                 found.map(&:to_s).uniq.sort,)
+  end
 end
